@@ -7,6 +7,11 @@ Project for learning PySide6.  Ths Source code will of course be available to yo
 
 License: GNU v3
 
+# Releases:
+
+#### I can't upload the releases to GitHub, because they are to big. You can download them here:
+## [Releases](https://drive.google.com/drive/folders/1hek8l_XrFC9U3m1-Q1y-y8WeBLVCK0Zn?usp=sharing)
+
 
 # What API are you using? 
 

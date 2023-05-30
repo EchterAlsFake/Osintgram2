@@ -5,7 +5,7 @@ We all know the great Osintgram from Datalux.  Sadly this project is dead... <br
 I will try to continue this with a Graphical User Interface.  This is also my personal <br>
 Project for learning PySide6.  Ths Source code will of course be available to you!
 
-License: GNU v3
+License: GPL3
 
 # Releases:
 

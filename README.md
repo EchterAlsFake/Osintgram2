@@ -30,6 +30,11 @@ License: GPL3
 
 ### It all belongs on how much time I have...
 
+# Comments not working?
+
+### I can only get the comments from the first page of a post.
+### I am still working on a fix for that.
+
 # Supported Systems:
 
 - Windows (Pre Compiled)

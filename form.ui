@@ -1,364 +1,448 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Inst_downloader_widget</class>
- <widget class="QWidget" name="Inst_downloader_widget">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>693</width>
-    <height>430</height>
+    <width>1469</width>
+    <height>727</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Widget</string>
+   <string>Form</string>
   </property>
-  <widget class="QWidget" name="">
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>-1</x>
-     <y>9</y>
-     <width>194</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="email_horizontal_layout">
-    <item>
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Email: </string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="line_edit_email"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>200</x>
-     <y>10</y>
-     <width>307</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="password_login_layout">
-    <item>
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Password:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="line_edit_password">
-      <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2"/>
-    </item>
-    <item>
-     <widget class="QPushButton" name="push_button_login">
-      <property name="text">
-       <string>Login</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>-1</x>
-     <y>101</y>
-     <width>284</width>
+     <x>9</x>
+     <y>691</y>
+     <width>125</width>
      <height>27</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="target_horizontal_layout">
-    <item>
-     <widget class="QLabel" name="target_label">
-      <property name="text">
-       <string>Target:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="line_edit_target"/>
-    </item>
-    <item>
-     <widget class="QPushButton" name="push_button_submit">
-      <property name="text">
-       <string>Submit</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>360</y>
+     <y>10</y>
      <width>691</width>
-     <height>65</height>
+     <height>91</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <widget class="QLabel" name="label_information">
-      <property name="text">
-       <string>Information: </string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="two_fa_information_label">
-      <property name="text">
-       <string>2FA Information:  2FA is not working. I am  trying to fix that, but I probably won't get it to work sorry :(</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="developer_info_label">
-      <property name="text">
-       <string>Made by EchterAlsFake - https://github.com/EchterAlsFake/Instagram_Downloader    License: GPL3</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>40</y>
-     <width>479</width>
-     <height>50</height>
-    </rect>
+   <property name="title">
+    <string/>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QLabel" name="program_stuck_label">
-      <property name="text">
-       <string>Note:  If the program gets stuck:  Just wait!   It's running in background.</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QProgressBar" name="prgressbar_login">
-      <property name="value">
-       <number>0</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QLabel" name="meta_information_label">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>130</y>
-     <width>115</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Metainformation</string>
-   </property>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>150</y>
-     <width>351</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QLabel" name="id_label">
-      <property name="text">
-       <string>ID: </string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="line_edit_id"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>170</y>
-     <width>351</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_3">
-    <item>
-     <widget class="QLabel" name="full_name_label">
-      <property name="text">
-       <string>Full Name:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="line_edit_full_name"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>190</y>
-     <width>351</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_5">
-    <item>
-     <widget class="QLabel" name="total_images_label">
-      <property name="text">
-       <string>Total images:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <layout class="QFormLayout" name="formLayout">
+    <item row="0" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLineEdit" name="line_edit_total_images"/>
+       <widget class="QLabel" name="label">
+        <property name="styleSheet">
+         <string notr="true">color: white;</string>
+        </property>
+        <property name="text">
+         <string>E-Mail</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_2">
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 5px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: #4a90d9;
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="styleSheet">
+           <string notr="true">color: white</string>
+          </property>
+          <property name="text">
+           <string>Password</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_3">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 5px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: #4a90d9;
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: #5468ff;
+    border: none;
+    border-radius: 6px;
+    color: #fff;QPushButton {
+    background-color: #5468ff;
+	margin-bottom: 8px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 16px 0px 16px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}
+
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 18px 0px 17px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}
+</string>
+        </property>
+        <property name="text">
+         <string>Login</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>210</y>
-     <width>351</width>
-     <height>27</height>
+     <y>110</y>
+     <width>451</width>
+     <height>180</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_6">
-    <item>
-     <widget class="QLabel" name="follower_count_label">
-      <property name="text">
-       <string>Follower count:</string>
-      </property>
-     </widget>
+   <property name="title">
+    <string>Media</string>
+   </property>
+   <layout class="QFormLayout" name="formLayout_2">
+    <item row="3" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Status:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_4"/>
+      </item>
+     </layout>
     </item>
-    <item>
-     <widget class="QLineEdit" name="line_edit_follower_count"/>
+    <item row="0" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: #5468ff;
+    border: none;
+    border-radius: 6px;
+    color: #fff;QPushButton {
+    background-color: #5468ff;
+	margin-bottom: 8px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 16px 0px 16px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}
+
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 18px 0px 17px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}</string>
+        </property>
+        <property name="text">
+         <string>Download comments</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QProgressBar" name="progressBar_2">
+        <property name="value">
+         <number>24</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QPushButton" name="pushButton_5">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: #5468ff;
+    border: none;
+    border-radius: 6px;
+    color: #fff;QPushButton {
+    background-color: #5468ff;
+	margin-bottom: 8px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 16px 0px 16px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}
+
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 18px 0px 17px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}</string>
+        </property>
+        <property name="text">
+         <string>Download profile pic</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QProgressBar" name="progressBar">
+        <property name="styleSheet">
+         <string notr="true">margin-left: 3px;
+text-align: center;</string>
+        </property>
+        <property name="value">
+         <number>24</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QPushButton" name="pushButton_6">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: #5468ff;
+    border: none;
+    border-radius: 6px;
+    color: #fff;QPushButton {
+    background-color: #5468ff;
+	margin-bottom: 8px;
+	margin-right: 10px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 16px 0px 16px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}
+
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 18px 0px 17px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}</string>
+        </property>
+        <property name="text">
+         <string>Download photos</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QProgressBar" name="progressBar_3">
+        <property name="styleSheet">
+         <string notr="true">margin-left: 24px;
+text-align: center;</string>
+        </property>
+        <property name="value">
+         <number>24</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QCheckBox" name="checkBox">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>240</y>
-     <width>351</width>
-     <height>27</height>
+     <x>620</x>
+     <y>310</y>
+     <width>92</width>
+     <height>25</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_7">
-    <item>
-     <widget class="QLabel" name="following_label">
-      <property name="text">
-       <string>Following count:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="line_edit_following_count"/>
-    </item>
-   </layout>
+   <property name="text">
+    <string>CheckBox</string>
+   </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QRadioButton" name="radioButton">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>270</y>
-     <width>351</width>
-     <height>27</height>
+     <x>460</x>
+     <y>470</y>
+     <width>109</width>
+     <height>25</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_8">
-    <item>
-     <widget class="QLabel" name="verified_label">
-      <property name="text">
-       <string>Verified: </string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="line_edit_verified"/>
-    </item>
-   </layout>
+   <property name="text">
+    <string>RadioButton</string>
+   </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>300</y>
-     <width>691</width>
-     <height>27</height>
+     <x>720</x>
+     <y>260</y>
+     <width>66</width>
+     <height>19</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_9">
-    <item>
-     <widget class="QPushButton" name="push_buton_download_photos">
-      <property name="text">
-       <string>Download Photos</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="push_button_download_propic">
-      <property name="text">
-       <string>Download Profile Picture URL (HD)</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>330</y>
-     <width>691</width>
+     <x>380</x>
+     <y>390</y>
+     <width>126</width>
      <height>27</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_10">
-    <item>
-     <widget class="QProgressBar" name="progressbar_photos">
-      <property name="value">
-       <number>0</number>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QProgressBar" name="progressbar_propic">
-      <property name="value">
-       <number>0</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <property name="text">
+    <string>Download photos</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_4">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>580</y>
+     <width>126</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Download photos</string>
+   </property>
   </widget>
  </widget>
  <resources/>

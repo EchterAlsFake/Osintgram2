@@ -1,99 +1,232 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>widget</class>
+ <widget class="QWidget" name="widget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1469</width>
-    <height>727</height>
+    <width>664</width>
+    <height>384</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Osintgram 2.0  CC  1.0  /Version : 1</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">background-color: black;</string>
   </property>
-  <widget class="QLineEdit" name="lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>691</y>
-     <width>125</width>
-     <height>27</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>10</y>
-     <width>691</width>
-     <height>91</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string/>
-   </property>
-   <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="0" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="styleSheet">
-         <string notr="true">color: white;</string>
-        </property>
-        <property name="text">
-         <string>E-Mail</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit_2">
-        <property name="styleSheet">
-         <string notr="true">QLineEdit {
-    border: 2px solid #757575;
-    border-radius: 5px;
-    padding: 0 8px;
-    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
-    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
-    font-size: 16px;
-    height: 20px;
-}
-
-QLineEdit:focus {
-    border-color: #4a90d9;
-}
-
-QLineEdit:disabled {
-    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
-    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
-    border-color: #aaaaaa;
-}</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+  <layout class="QFormLayout" name="formLayout_3">
+   <item row="1" column="1">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="title">
+      <string>Media</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="1" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QLabel" name="label_2">
+         <widget class="QPushButton" name="button_download_comments">
           <property name="styleSheet">
-           <string notr="true">color: white</string>
+           <string notr="true">QPushButton {
+    background-color: #5468ff;
+    border: none;
+    border-radius: 6px;
+    color: #fff;QPushButton {
+    background-color: #5468ff;
+	margin-bottom: 8px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 16px 0px 16px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}
+
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 18px 0px 17px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}</string>
           </property>
           <property name="text">
-           <string>Password</string>
+           <string>Download comments</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_3">
+         <widget class="QProgressBar" name="progressbar_comments">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QPushButton" name="button_photos">
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #5468ff;
+    border: none;
+    border-radius: 6px;
+    color: #fff;QPushButton {
+    background-color: #5468ff;
+	margin-bottom: 8px;
+	margin-right: 20px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+	text-align: center;
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 20px 20px 20px 20px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}
+
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 18px 0px 17px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}</string>
+          </property>
+          <property name="text">
+           <string>Download photos       </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressbar_photos">
+          <property name="styleSheet">
+           <string notr="true">
+text-align: center;</string>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QPushButton" name="button_profile_pic">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #5468ff;
+    border: none;
+    border-radius: 6px;
+    color: #fff;QPushButton {
+    background-color: #5468ff;
+	margin-bottom: 8px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 16px 0px 16px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}
+
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 18px 0px 17px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}</string>
+          </property>
+          <property name="text">
+           <string>Download profile pic </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressbar_profile_pic">
+          <property name="styleSheet">
+           <string notr="true">margin-left: 3px;
+text-align: center;</string>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="label_status">
+          <property name="styleSheet">
+           <string notr="true">color: white</string>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_status">
           <property name="styleSheet">
            <string notr="true">QLineEdit {
     border: 2px solid #757575;
@@ -119,10 +252,187 @@ QLineEdit:disabled {
         </item>
        </layout>
       </item>
-      <item>
-       <widget class="QPushButton" name="pushButton">
+      <item row="0" column="0" colspan="2">
+       <widget class="QPushButton" name="button_locations">
         <property name="styleSheet">
          <string notr="true">QPushButton {
+    background-color: #5468ff;
+    border: none;
+    border-radius: 6px;
+    color: #fff;QPushButton {
+    background-color: #5468ff;
+	margin-bottom: 8px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 16px 0px 16px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}
+
+    font-family: &quot;JetBrains Mono&quot;, monospace;
+    font-size: 15px;
+    padding: 0px 18px 0px 17px;
+    height: 24px;
+}
+
+QPushButton:hover {
+    background-color: #3c4fe0;
+}
+
+QPushButton:pressed {
+    background-color: #3c4fe0;
+}</string>
+        </property>
+        <property name="text">
+         <string>Export Locations</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupbox_login">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_email">
+          <property name="styleSheet">
+           <string notr="true">color: white;</string>
+          </property>
+          <property name="text">
+           <string>E-Mail</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_email">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 5px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: #4a90d9;
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLabel" name="label_target">
+          <property name="styleSheet">
+           <string notr="true">color: white</string>
+          </property>
+          <property name="text">
+           <string>Target:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_target">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 5px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: #4a90d9;
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_password">
+            <property name="styleSheet">
+             <string notr="true">color: white</string>
+            </property>
+            <property name="text">
+             <string>Password</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineedit_password">
+            <property name="styleSheet">
+             <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 5px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: #4a90d9;
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_login">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
     background-color: #5468ff;
     border: none;
     border-radius: 6px;
@@ -160,290 +470,28 @@ QPushButton:pressed {
     background-color: #3c4fe0;
 }
 </string>
-        </property>
-        <property name="text">
-         <string>Login</string>
-        </property>
-       </widget>
+          </property>
+          <property name="text">
+           <string>Login</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_2">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>110</y>
-     <width>451</width>
-     <height>180</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Media</string>
-   </property>
-   <layout class="QFormLayout" name="formLayout_2">
-    <item row="3" column="0" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_7">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Status:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit_4"/>
-      </item>
-     </layout>
-    </item>
-    <item row="0" column="0" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QPushButton" name="pushButton_3">
+      <item row="2" column="0" colspan="2">
+       <widget class="QProgressBar" name="progressbar_login">
         <property name="styleSheet">
-         <string notr="true">QPushButton {
-    background-color: #5468ff;
-    border: none;
-    border-radius: 6px;
-    color: #fff;QPushButton {
-    background-color: #5468ff;
-	margin-bottom: 8px;
-    border: none;
-    border-radius: 6px;
-    color: #fff;
-    font-family: &quot;JetBrains Mono&quot;, monospace;
-    font-size: 15px;
-    padding: 0px 16px 0px 16px;
-    height: 24px;
-}
-
-QPushButton:hover {
-    background-color: #3c4fe0;
-}
-
-QPushButton:pressed {
-    background-color: #3c4fe0;
-}
-
-    font-family: &quot;JetBrains Mono&quot;, monospace;
-    font-size: 15px;
-    padding: 0px 18px 0px 17px;
-    height: 24px;
-}
-
-QPushButton:hover {
-    background-color: #3c4fe0;
-}
-
-QPushButton:pressed {
-    background-color: #3c4fe0;
-}</string>
-        </property>
-        <property name="text">
-         <string>Download comments</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QProgressBar" name="progressBar_2">
-        <property name="value">
-         <number>24</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="2" column="0" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_6">
-      <item>
-       <widget class="QPushButton" name="pushButton_5">
-        <property name="styleSheet">
-         <string notr="true">QPushButton {
-    background-color: #5468ff;
-    border: none;
-    border-radius: 6px;
-    color: #fff;QPushButton {
-    background-color: #5468ff;
-	margin-bottom: 8px;
-    border: none;
-    border-radius: 6px;
-    color: #fff;
-    font-family: &quot;JetBrains Mono&quot;, monospace;
-    font-size: 15px;
-    padding: 0px 16px 0px 16px;
-    height: 24px;
-}
-
-QPushButton:hover {
-    background-color: #3c4fe0;
-}
-
-QPushButton:pressed {
-    background-color: #3c4fe0;
-}
-
-    font-family: &quot;JetBrains Mono&quot;, monospace;
-    font-size: 15px;
-    padding: 0px 18px 0px 17px;
-    height: 24px;
-}
-
-QPushButton:hover {
-    background-color: #3c4fe0;
-}
-
-QPushButton:pressed {
-    background-color: #3c4fe0;
-}</string>
-        </property>
-        <property name="text">
-         <string>Download profile pic</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QProgressBar" name="progressBar">
-        <property name="styleSheet">
-         <string notr="true">margin-left: 3px;
-text-align: center;</string>
+         <string notr="true">color: white;</string>
         </property>
         <property name="value">
-         <number>24</number>
+         <number>0</number>
         </property>
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="1" column="0" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
-       <widget class="QPushButton" name="pushButton_6">
-        <property name="styleSheet">
-         <string notr="true">QPushButton {
-    background-color: #5468ff;
-    border: none;
-    border-radius: 6px;
-    color: #fff;QPushButton {
-    background-color: #5468ff;
-	margin-bottom: 8px;
-	margin-right: 10px;
-    border: none;
-    border-radius: 6px;
-    color: #fff;
-    font-family: &quot;JetBrains Mono&quot;, monospace;
-    font-size: 15px;
-    padding: 0px 16px 0px 16px;
-    height: 24px;
-}
-
-QPushButton:hover {
-    background-color: #3c4fe0;
-}
-
-QPushButton:pressed {
-    background-color: #3c4fe0;
-}
-
-    font-family: &quot;JetBrains Mono&quot;, monospace;
-    font-size: 15px;
-    padding: 0px 18px 0px 17px;
-    height: 24px;
-}
-
-QPushButton:hover {
-    background-color: #3c4fe0;
-}
-
-QPushButton:pressed {
-    background-color: #3c4fe0;
-}</string>
-        </property>
-        <property name="text">
-         <string>Download photos</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QProgressBar" name="progressBar_3">
-        <property name="styleSheet">
-         <string notr="true">margin-left: 24px;
-text-align: center;</string>
-        </property>
-        <property name="value">
-         <number>24</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QCheckBox" name="checkBox">
-   <property name="geometry">
-    <rect>
-     <x>620</x>
-     <y>310</y>
-     <width>92</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>CheckBox</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radioButton">
-   <property name="geometry">
-    <rect>
-     <x>460</x>
-     <y>470</y>
-     <width>109</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>RadioButton</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_4">
-   <property name="geometry">
-    <rect>
-     <x>720</x>
-     <y>260</y>
-     <width>66</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_2">
-   <property name="geometry">
-    <rect>
-     <x>380</x>
-     <y>390</y>
-     <width>126</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Download photos</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_4">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>580</y>
-     <width>126</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Download photos</string>
-   </property>
-  </widget>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

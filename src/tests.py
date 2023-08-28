@@ -7,13 +7,24 @@ deine_mutter = input("Password:")
 cl = Client()
 cl.login(email, deine_mutter)
 
-media_url = "https://www.instagram.com/p/Cv9aF8wAEHI/"
+media_url = "https://www.instagram.com/p/Cwa3jEGguAX/"
+media_pk = cl.media_pk_from_url(media_url)
+story_pk = cl.story_pk_from_url("https://www.instagram.com/stories/nadyadorofeeva/3178875165663678569/")
 
-file = cl.photo_download_by_url_origin(media_url)
+"""
+Photo download test:
+"""
 
-with open("fortnite.jpg", "w") as f:
-    f.close()
+# cl.photo_download(media_pk) # Passed
 
+"""
+Video download test:
 
-with open("fortnite.jpg", "wb") as f:
-    f.write(file)
+Info for myself:
+
+It seems like for the API reels and videos are the same.
+So if I download a reel with the download_video method it still works."""
+
+# cl.video_download(media_pk) # Passed
+
+cl.story_download(story_pk=story_pk)

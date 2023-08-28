@@ -1,0 +1,5 @@
+instagrapi
+PySide6
+wget
+colorama
+pillow

@@ -1,6 +1,8 @@
+import contextlib
 import instagrapi.exceptions
 from instagrapi import Client
 import wget
+import os
 from colorama import *
 from time import sleep
 from datetime import datetime
@@ -174,7 +176,6 @@ Nothing here...
 class Osintgram_like_datalux():
 
     """
-
 Tries to be as Osintgram from Datalux, which is sadly dead, because the API is not working properly.
 My version of Osintgram uses a really stable API called 'instagrapi'
     """
@@ -184,15 +185,21 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         self.x = f"{Fore.LIGHTRED_EX}[~]{Fore.RESET}"
         self.username = None
         self.password = None
+        self.photo_data = []
+        self.video_data = []
+        self.igtv_data = []
+        self.reel_data = []
+        self.album_data = []
         self.target = "Not specified"
         self.cl = Client()
-        self.menu()
+        self.login()
+        while True:
+            self.menu()
 
 
     def menu(self):
 
         options = input(f"""
-0) - Login
 T) - Set target
 1) - addrs           Get all registered addressed by target photos
 2) - captions        Get user's photos captions
@@ -216,19 +223,36 @@ T) - Set target
 20) - wtagged         Get a list of user who tagged target
 
 -------------------=>:""")
-        if options == "0":
-            self.login()
 
+        if options == "1":
+            if len(self.photo_data) == 0 or self.photo_data is None:
+                print("No photo data.  Checking for media.....")
+                self.get_media()
 
-        elif options == "1":
-            self.get_photos()
+            latitudes = []
+            longitudes = []
+
+            for media in self.photo_data:
+                with contextlib.suppress(AttributeError):
+                    latitudes.append(media.location.lat)
+                    longitudes.append(media.location.lng)
+                    print(f"""
+{self.z}Found Location: {media.location.lat} : {media.location.lng}  First is lat, second is long.
+""")
+            if len(latitudes) and not longitudes:
+                print(f"{self.x}{Fore.LIGHTYELLOW_EX} No location data found. Sorry.")
+
 
         elif options == "T":
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
+            self.verify_target()
 
-    def login(self):
 
-        if not os.path.isfile("session.json"):
+
+
+    def login(self, password_login=False):
+
+        if not os.path.isfile("session.json") or password_login:
             print(f"{self.z}There is no session.json file. Logging in with username and password...")
 
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter username --=>:")
@@ -237,17 +261,25 @@ T) - Set target
                 self.cl.login(self.username, self.password)
                 print(f"{self.z}{Fore.LIGHTGREEN_EX}Login successful!")
                 session_id = self.cl.sessionid
-                with
-                print(f"{self.z}{Fore.LIGHTGREEN_EX}Saving Session ID for next time...")
+                session_data = {
+                    "session_id": session_id
+                }
+                with open("session.json", "w") as file:
+                    json.dump(session_data, file)
 
+                print(f"{self.z}{Fore.LIGHTGREEN_EX}Saved Session ID")
 
+            except instagrapi.exceptions.BadPassword or instagrapi.exceptions.BadCredentials:
+                print(f"{self.x}{Fore.LIGHTWHITE_EX}Wrong credentials. Please try again.")
+                self.login(password_login=True)
+
+        else:
 
             with open("session.json", "r") as file:
                 session_data = json.load(file)
 
             session_id_value = session_data["session_id"]
             print(f"{self.z}{Fore.LIGHTGREEN_EX}Found Session ID: {session_id_value}:")
-
             try:
 
                 self.cl.login_by_sessionid(session_id_value)
@@ -257,23 +289,53 @@ T) - Set target
                 print(f"{self.x}{Fore.LIGHTRED_EX}Incorrect password!{Fore.RESET}")
                 self.login()
 
-        else:
-            self.login()
-
-
     def get_target_id(self):
         return self.cl.user_id_from_username(self.username)
 
-    def get_photos(self):
-        target_id = self.get_target_id(self.target)
+    def verify_target(self):
+        target_id = self.get_target_id()
+        info = self.cl.user_info(target_id)
+        print(f"{self.z}{Fore.LIGHTCYAN_EX}Target: {info.full_name}")
+        self.get_media()
+
+    def get_media(self):
+        target_id = self.get_target_id()
         print(f"{self.z}{Fore.LIGHTGREEN_EX}Target ID: {target_id}{Fore.RESET}")
         medias = self.cl.user_medias_v1(user_id=target_id)
         print(f"{self.z}{Fore.LIGHTGREEN_EX}Found {len(medias)} media files{Fore.RESET}")
         for media in medias:
             print(media.media_type)
+            if media.media_type == 1:
+                self.photo_data.append(media)
+                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Photo")
+
+            elif media.media_type == 2 and media.product_type == "feed":
+                self.video_data.append(media)
+                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Video")
+
+            elif media.media_type == 2 and media.product_type == "igtv":
+                self.igtv_data.append(media)
+                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: IGTV")
+
+            elif media.media_type == 2 and media.product_type == "clips":
+                self.reel_data.append(media)
+                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Reel")
+
+            elif media.media_type == 8:
+                self.album_data.append(media)
+                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Album")
+
+
+        print(f"""
+Photos: {len(self.photo_data)}
+Videos: {len(self.video_data)}
+IGTV: {len(self.igtv_data)}
+Reels: {len(self.reel_data)}
+Albums: {len(self.album_data)}
+""")
 
 
 
 
 
-
+Osintgram_like_datalux()

@@ -11,12 +11,11 @@
 - [x] --> fwingsemail
 - [x] --> fwersnumber
 - [x] --> fwingsnumber
-- [] --> hashtags
-- [] --> likes
-- [] --> media types
-- [] --> photos des
-- [] --> photos
-- [] --> propic
+- [x] --> likes
+- [x] --> media types
+- [x] --> photos des
+- [x] --> photos
+- [x] --> propic
 - [] --> stories
 - [] --> tagged
 - [] --> wcommented

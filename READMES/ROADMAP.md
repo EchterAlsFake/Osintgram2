@@ -8,9 +8,9 @@
 - [x] --> comments
 - [x] --> followings
 - [x] --> fwersemail
-- [] --> fwingsemail
-- [] --> fwersnumber
-- [] --> fwingsnumber
+- [x] --> fwingsemail
+- [x] --> fwersnumber
+- [x] --> fwingsnumber
 - [] --> hashtags
 - [] --> likes
 - [] --> media types

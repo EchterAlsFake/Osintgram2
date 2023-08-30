@@ -188,6 +188,8 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         self.igtv_data = []
         self.reel_data = []
         self.album_data = []
+        self.followers = None
+        self.followings = None
         self.target = "Not specified"
         self.cl = Client()
         self.login()
@@ -197,7 +199,8 @@ My version of Osintgram uses a really stable API called 'instagrapi'
     def menu(self):
 
         options = input(f"""
-T) - Set target
+T) Set Target
+R) In case, the target doesn't apply within the program, use this function to force it.
 1) - addrs           Get all registered addressed by target photos
 2) - captions        Get user's photos captions
 3) - comments        Get total comments of target's posts
@@ -237,11 +240,18 @@ T) - Set target
             self.get_followings()
 
         elif options == "6":
-            self.get_email()
+            self.get_email(mode="6")
+
+        elif options == "7":
+            self.get_email(mode="7")
+
+        elif options == "8":
+            self.get_fwers_number()
 
         elif options == "T":
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
             self.verify_target()
+            self.clear_lists()
 
     def login(self, password_login=False):
 
@@ -291,33 +301,56 @@ T) - Set target
         print(f"{self.z}{Fore.LIGHTCYAN_EX}Target: {info.full_name}")
         self.get_media()
 
-    def get_media(self):
+
+    def get_followers_raw(self):
+
         target_id = self.get_target_id()
-        print(f"{self.z}{Fore.LIGHTGREEN_EX}Target ID: {target_id}{Fore.RESET}")
-        medias = self.cl.user_medias_v1(user_id=target_id)
+        print(f"{self.z}{Fore.LIGHTMAGENTA_EX}Requesting followers of {target_id}{Fore.RESET}")
+        self.followers = self.cl.user_followers(user_id=target_id)
+
+    def get_followings_raw(self):
+
+        target_id = self.get_target_id()
+        print(f"{self.z}{Fore.LIGHTMAGENTA_EX}Requesting followings of {target_id}{Fore.RESET}")
+        self.followings = self.cl.user_following(user_id=target_id)
+
+
+    def get_media_raw(self):
+        print(f"{self.z}{Fore.LIGHTCYAN_EX}Requesting media objects for target: {self.target}")
+        medias = self.cl.user_medias_v1(user_id=self.get_target_id())
         print(f"{self.z}{Fore.LIGHTGREEN_EX}Found {len(medias)} media files{Fore.RESET}")
         for media in medias:
             print(media.media_type)
             if media.media_type == 1:
                 self.photo_data.append(media)
-                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Photo")
-
 
             elif media.media_type == 2 and media.product_type == "feed":
                 self.video_data.append(media)
-                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Video")
 
             elif media.media_type == 2 and media.product_type == "igtv":
                 self.igtv_data.append(media)
-                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: IGTV")
 
             elif media.media_type == 2 and media.product_type == "clips":
                 self.reel_data.append(media)
-                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Reel")
 
             elif media.media_type == 8:
                 self.album_data.append(media)
-                print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Album")
+
+    def clear_lists(self):
+        self.video_data = []
+        self.reel_data = []
+        self.album_data = []
+        self.igtv_data = []
+        self.photo_data = []
+        self.followers = None
+        self.followings = None
+
+
+
+    def get_media(self):
+        target_id = self.get_target_id()
+        print(f"{self.z}{Fore.LIGHTGREEN_EX}Target ID: {target_id}{Fore.RESET}")
+
 
         print(f"""
 Photos: {len(self.photo_data)}
@@ -394,11 +427,16 @@ Text: {text}
         for counter, follower in enumerate(follwings):
             print(f"{counter}) Username: {follower.username}")
 
-    def get_email(self):
+    def get_email(self, mode):
 
-        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}For how much followers you want to get emails for (10 followers will take like 20-30 seconds) --=>:")
+        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}For how much followers / following you want to get emails for (10 followers will take like 20-30 seconds) --=>:")
         user_id = self.get_target_id()
-        followers = self.cl.user_followers_v1(user_id, amount=int(amount))
+        if mode == "6":
+            followers = self.cl.user_followers_v1(user_id, amount=int(amount))
+
+        elif mode == "7":
+            followers = self.cl.user_following_v1(user_id, amount=int(amount))
+
         emails = []
         user_names = []
         valid_users = []
@@ -423,6 +461,14 @@ Text: {text}
 
         for counter, email in enumerate(emails):
             print(f"{counter}) User: {user_names[counter]} Email: {email}")
+
+    def get_number(self, mode):
+
+        amount = input(f"{self.z}{Fore.LIGHTMAGENTA_EX}For how much followers / following you want to get numbers for (10 followers will take like 20-30 seconds) --=>:")
+        user_id = self.get_target_id()
+        self.i
+
+
 
 
 Osintgram_like_datalux()

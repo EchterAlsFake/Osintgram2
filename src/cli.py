@@ -9,6 +9,7 @@ from datetime import datetime
 from getpass import getpass
 import json
 
+
 class Osintgram_advanced():
 
     def __init__(self):
@@ -37,8 +38,8 @@ class Osintgram_advanced():
             self.login()
 
         except instagrapi.exceptions.ChallengeRequired:
-            print(f"{self.x}{Fore.LIGHTRED_EX}You need to solve a challenge. Go to instagram.com and solve it. Then try again.{Fore.RESET}")
-
+            print(
+                f"{self.x}{Fore.LIGHTRED_EX}You need to solve a challenge. Go to instagram.com and solve it. Then try again.{Fore.RESET}")
 
     def menu(self):
 
@@ -62,7 +63,6 @@ class Osintgram_advanced():
         elif options == "2":
             self.account_page()
 
-
     def set_target(self):
 
         target = input(f"""
@@ -81,7 +81,6 @@ Please enter the account name of the instagram account you want to do stuff with
         except instagrapi.exceptions.UserNotFound:
             print(f"{self.x}{Fore.LIGHTRED_EX}Account not found!{Fore.RESET}")
             self.set_target()
-
 
         _ = input(f"""
 Please check the information:
@@ -161,9 +160,9 @@ Nothing here...
 
 -----------------------------------=>:""")
 
-
         if options == "1":
             self.get_follower_list()
+
     def get_follower_list(self):
         username = self.cl.username
         user_id = self.cl.user_id_from_username("leomessi")
@@ -174,7 +173,6 @@ Nothing here...
 
 
 class Osintgram_like_datalux():
-
     """
 Tries to be as Osintgram from Datalux, which is sadly dead, because the API is not working properly.
 My version of Osintgram uses a really stable API called 'instagrapi'
@@ -195,7 +193,6 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         self.login()
         while True:
             self.menu()
-
 
     def menu(self):
 
@@ -225,30 +222,26 @@ T) - Set target
 -------------------=>:""")
 
         if options == "1":
-            if len(self.photo_data) == 0 or self.photo_data is None:
-                print("No photo data.  Checking for media.....")
-                self.get_media()
+            self.get_location()
 
-            latitudes = []
-            longitudes = []
+        elif options == "2":
+            self.get_photos_captions()
 
-            for media in self.photo_data:
-                with contextlib.suppress(AttributeError):
-                    latitudes.append(media.location.lat)
-                    longitudes.append(media.location.lng)
-                    print(f"""
-{self.z}Found Location: {media.location.lat} : {media.location.lng}  First is lat, second is long.
-""")
-            if len(latitudes) and not longitudes:
-                print(f"{self.x}{Fore.LIGHTYELLOW_EX} No location data found. Sorry.")
+        elif options == "3":
+            self.get_comments()
 
+        elif options == "4":
+            self.get_followers()
+
+        elif options == "5":
+            self.get_followings()
+
+        elif options == "6":
+            self.get_email()
 
         elif options == "T":
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
             self.verify_target()
-
-
-
 
     def login(self, password_login=False):
 
@@ -309,6 +302,7 @@ T) - Set target
                 self.photo_data.append(media)
                 print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Photo")
 
+
             elif media.media_type == 2 and media.product_type == "feed":
                 self.video_data.append(media)
                 print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Video")
@@ -325,7 +319,6 @@ T) - Set target
                 self.album_data.append(media)
                 print(f"{self.z}{Fore.LIGHTGREEN_EX}Appended: Album")
 
-
         print(f"""
 Photos: {len(self.photo_data)}
 Videos: {len(self.video_data)}
@@ -334,8 +327,102 @@ Reels: {len(self.reel_data)}
 Albums: {len(self.album_data)}
 """)
 
+    def get_location(self):
+        if len(self.photo_data) == 0 or self.photo_data is None:
+            print("No photo data.  Checking for media.....")
+            self.get_media()
 
+        latitudes = []
+        longitudes = []
 
+        for media in self.photo_data:
+            with contextlib.suppress(AttributeError):
+                latitudes.append(media.location.lat)
+                longitudes.append(media.location.lng)
+                print(f"""
+        {self.z}Found Location: {media.location.lat} : {media.location.lng}  First is lat, second is long.
+        """)
+        if len(latitudes) and not longitudes:
+            print(f"{self.x}{Fore.LIGHTYELLOW_EX} No location data found. Sorry.")
+
+    def get_photos_captions(self):
+
+        if len(self.photo_data) == 0 or self.photo_data is None:
+            self.get_media()
+
+        for media in self.photo_data:
+            print(f"""
+Media ID: {media.id}
+Caption: {media.caption_text}
+""")
+
+        input(f"{self.z}{Fore.LIGHTYELLOW_EX}Press ENTER to continue...")
+
+    def get_comments(self):
+        data = self.photo_data + self.igtv_data + self.reel_data + self.video_data + self.album_data
+        media_ids = [item.id for item in data]
+
+        for id in media_ids:
+            comments = self.cl.media_comments(media_id=id)
+            print(f"{self.z}{Fore.LIGHTGREEN_EX}Found {len(comments)} comments in Media: {id}")
+            for comment in comments:
+                text = comment.text
+                created = comment.created_at_utc
+                likes = comment.like_count
+                user = comment.user.username
+
+                print(f"""
+User: {user}
+Commented at: {created}
+Likes: {likes}
+Text: {text}
+                     
+                """)
+
+    def get_followers(self):
+
+        user_id = self.get_target_id()
+        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter amount of followings you want to get  (0 for all) --=>:")
+        follwings = self.cl.user_followers_v1(user_id, amount=int(amount))
+        for counter, follower in enumerate(follwings):
+            print(f"{counter}) Username: {follower.username}")
+
+    def get_followings(self):
+        user_id = self.get_target_id()
+        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter amount of followings you want to get  (0 for all) --=>:")
+        follwings = self.cl.user_following_v1(user_id, amount=int(amount))
+        for counter, follower in enumerate(follwings):
+            print(f"{counter}) Username: {follower.username}")
+
+    def get_email(self):
+
+        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}For how much followers you want to get emails for (10 followers will take like 20-30 seconds) --=>:")
+        user_id = self.get_target_id()
+        followers = self.cl.user_followers_v1(user_id, amount=int(amount))
+        emails = []
+        user_names = []
+        valid_users = []
+
+        for follower in followers:
+            user_names.append(follower.username)
+            print(f"{self.z}{Fore.LIGHTMAGENTA_EX} Appended: {follower.username}")
+
+        for username in user_names:
+            try:
+                email = self.cl.user_info_by_username(username)
+                if email is not None:
+                    emails.append(email.public_email)
+                    valid_users.append(email.username)
+                    print(f"{self.z}{Fore.LIGHTMAGENTA_EX} Appended: Valid User: {email.username}")
+
+                else:
+                    print(f"User: {username} Does not have a public email.")
+
+            except AttributeError:
+                pass
+
+        for counter, email in enumerate(emails):
+            print(f"{counter}) User: {user_names[counter]} Email: {email}")
 
 
 Osintgram_like_datalux()

@@ -4,10 +4,10 @@
 
 - [x] --> Login
 - [x] --> addrs (Get location)
-- [] --> captions
-- [] --> comments
-- [] --> followings
-- [] --> fwersemail
+- [x] --> captions
+- [x] --> comments
+- [x] --> followings
+- [x] --> fwersemail
 - [] --> fwingsemail
 - [] --> fwersnumber
 - [] --> fwingsnumber
@@ -21,6 +21,12 @@
 - [] --> tagged
 - [] --> wcommented
 - [] --> wtagged
-
+--------
+My own features...
+- [] --> Make the program take up less API requests
+- [] --> Make CLI with click
+- [] --> Create GUI with PySide6
+- [] --> Create Discord Bot
+- [] --> Create an Account menu for changing account related stuff
 
 I am constantly working on the features. Please give me some time...

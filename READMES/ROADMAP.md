@@ -13,13 +13,10 @@
 - [x] --> fwingsnumber
 - [x] --> likes
 - [x] --> media types
-- [x] --> photos des
 - [x] --> photos
 - [x] --> propic
 - [] --> stories
-- [] --> tagged
 - [] --> wcommented
-- [] --> wtagged
 --------
 My own features...
 - [] --> Make the program take up less API requests

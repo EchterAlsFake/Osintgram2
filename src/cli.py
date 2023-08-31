@@ -29,6 +29,7 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         self.album_data = []
         self.followers = None
         self.followings = None
+        self.stories = []
         self.medias_export = None
         self.target = "Not specified"
         self.cl = Client()
@@ -56,12 +57,9 @@ R) In case, the target doesn't apply within the program, use this function to fo
 13) - photos          Download user's photos in output folder
 14) - propic          Download user's profile picture
 15) - stories         Download user's stories  
-16) - tagged          Get list of users tagged by target
-17) - wcommented      Get a list of user who commented target's photos
-18) - wtagged         Get a list of user who tagged target
+16) - wcommented      Get a list of user who commented target's photos
 
 -------------------=>:""")
-
         if options == "1":
             self.get_location()
 
@@ -103,6 +101,9 @@ R) In case, the target doesn't apply within the program, use this function to fo
 
         elif options == "14":
             self.download_propic()
+
+        elif options == "15":
+            self.download_stories()
 
         elif options == "T":
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
@@ -444,5 +445,20 @@ Album:  {album}""")
         user_info = self.cl.user_info_v1(user_id)
         picture = user_info.profile_pic_url_hd
         wget.download(picture)
+
+    def download_stories(self):
+        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter the amount of stories you want to download (0 for all) --=>:")
+        stories = self.cl.user_stories(user_id=self.get_target_id(), amount=int(amount))
+
+        for story in stories:
+            self.stories.append(story.pk)
+
+
+        for pk in tqdm(self.stories):
+            self.cl.story_download(pk, folder="output")
+
+
+        print(f"{self.z}{Fore.LIGHTYELLOW_EX}Downloaded {len(stories)} stories")
+
 
 Osintgram_like_datalux()

@@ -4,9 +4,6 @@ from instagrapi import Client
 import wget
 import os
 from colorama import *
-from time import sleep
-from datetime import datetime
-from getpass import getpass
 import json
 from tqdm import tqdm
 
@@ -56,8 +53,8 @@ R) In case, the target doesn't apply within the program, use this function to fo
 12) - mediatype       Get user's posts type (photo or video)
 13) - photos          Download user's photos in output folder
 14) - propic          Download user's profile picture
-15) - stories         Download user's stories  
-16) - wcommented      Get a list of user who commented target's photos
+15) - stories         Download user's stories
+16) - Exit  
 
 -------------------=>:""")
         if options == "1":
@@ -104,6 +101,9 @@ R) In case, the target doesn't apply within the program, use this function to fo
 
         elif options == "15":
             self.download_stories()
+
+        elif options == "16":
+            exit(0)
 
         elif options == "T":
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
@@ -460,5 +460,5 @@ Album:  {album}""")
 
         print(f"{self.z}{Fore.LIGHTYELLOW_EX}Downloaded {len(stories)} stories")
 
-
-Osintgram_like_datalux()
+if __name__ == "__main__":
+    Osintgram_like_datalux()

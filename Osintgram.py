@@ -181,6 +181,7 @@ T) Set Target
                 print(f"{self.x}{Fore.LIGHTWHITE_EX}Wrong credentials. Please try again.")
                 self.login(password_login=True)
 
+
         else:
 
             with open("src/session.json", "r") as file:

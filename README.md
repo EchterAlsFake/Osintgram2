@@ -1,28 +1,20 @@
-## NOT PRODUCTION READY!!!
-## STILL IN DEVELOPMENT!!!
-
-
-# Osintgram 2.0
-
-
 # Table of contents
+- [Introduction](#what-is-osintgram-20-)
+- [Instagram ToS Information](#instagram-tos)
+- [Features](#features)
+- [Installation](#installation)
+- [Credits](#credits)
 
-
-
-# Installation
-
-### You can find the files in the [release](https://github.com/EchterAlsFake/Osintgram2/releases) tab
 
 
 # What is Osintgram 2.0? 
 
-There is a tool called Osintgram developed from Datalux. It was a tool to 
-<br>get information about targets with Instagram's Private API.
+Osintgram is a tool made for analyzing the instagram account of someone.
+<Br>It can automatically get all location data, captions, and other useful information
+<br>It was intended to be used by cybersecurity experts.
 
-Sadly the API he used is no longer maintained, and some endpoints from
-<br>Instagram are no longer valid. That's why I decided to make my own
-<br>version with the Instagrapi API. It's not as fast and good like from 
-<br> Datalux, but it should be good enough to do the basic things...
+It's based on the [Osintgram](https://github.com/Datalux/Osintgram) created by Datalux, which is sadly unmaintained for
+<br>years and currently not working.
 
 # Instagram ToS
 
@@ -34,48 +26,33 @@ Instagram PROHIBITS the use of automated tools and the use of
 # Features
 
 
-| Command       | Description                                                   |
-|---------------|---------------------------------------------------------------|
-| `addrs`       | Get all registered addressed by target photos                |
-| `captions`    | Get user's photos captions                                    |
-| `comments`    | Get total comments of target's posts                          |
-| `followers`   | Get target followers                                          |
-| `followings`  | Get users followed by target                                  |
-| `fwersemail`  | Get email of target followers                                 |
-| `fwingsemail` | Get email of users followed by target                         |
-| `fwersnumber` | Get phone number of target followers                          |
-| `fwingsnumber`| Get phone number of users followed by target                  |
-| `hashtags`    | Get hashtags used by target                                   |
-| `info`        | Get target info                                               |
-| `likes`       | Get total likes of target's posts                             |
-| `mediatype`   | Get user's posts type (photo or video)                        |
-| `photodes`    | Get description of target's photos                            |
-| `photos`      | Download user's photos in output folder                       |
-| `propic`      | Download user's profile picture                               |
-| `stories`     | Download user's stories                                       |
-| `tagged`      | Get list of users tagged by target                            |
-| `wcommented`  | Get a list of user who commented target's photos              |
-| `wtagged`     | Get a list of user who tagged target                          |
+| CLI Menu Command | Description                                    |
+|------------------|------------------------------------------------|
+| `1`              | Get all registered addressed by target photos  |
+| `2`              | Get user's photos captions                     |
+| `3`              | Get total comments of target's posts           |
+| `4`              | Get target followers                           |
+| `5`              | Get users followed by target                   |
+| `6`              | Get email of target followers                  |
+| `7`              | Get email of users followed by target          |
+| `8`              | Get phone number of target followers           |
+| `9`              | Get phone number of users followed by target   |
+| `10`             | Get target info                                |
+| `11`             | Get total likes of target's posts              |
+| `12`             | Get user's posts type (photo or video)         |
+| `13`             | Download user's photos in output folder        |
+| `14`             | Download user's profile picture                |
+| `15`             | Download user's stories                        |
+
+- Can save your session to make login easier
+
+# Installation
+
+### You can find the files in the [release](https://github.com/EchterAlsFake/Osintgram2/releases) tab
 
 
 
-# Credits:
+# Credits
 
 #### API: [instagrapi](https://github.com/subzeroid/instagrapi)
-
-Libraries:
-
-tqdm
-<br>colorama
-<br>wget
-
-# General questions
-
-- Can my Account get banned?     
-   A: Yes
-- Do I need to remove 2FA? 
-   <br>A: You will be prompted to enter your Key if needed
-- Why is the API so slow?
-   <br>A: Because it's more reliable and heavier
-- Is this actively maintained?
-   <br>A: Yes.
+#### Idea: [Original Osintgram](https://github.com/datalux/Osintgram)

@@ -1,4 +1,0 @@
-instagrapi
-wget
-colorama
-pillow

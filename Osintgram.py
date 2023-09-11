@@ -43,9 +43,9 @@ It's against their ToS and you will get banned for it and you could even get int
 Of course second will probably not happen, but I am not liable for what happens to your account.
 When using this tool you know what you do and it's not my responsibility to protect your account.
 
-This tool was intended to help cyber security analysts and not some random kids to spy one someone.
+This tool is made to help cyber security analysts and not some random kids to spy on someone.
 
-The original creator of a similar tool also called Osintgram was 'Datalux'.
+The original creator of a similar tool also called Osintgram is 'Datalux'.
 You can find his project here: https://github.com/Datalux/Osintgram
 
 By continuing you accept that I am not liable for anything and that you do everything
@@ -160,7 +160,7 @@ T) Set Target
 
     def login(self, password_login=False):
 
-        if not os.path.isfile("src/session.json") or password_login:
+        if not os.path.isfile("session.json") or password_login:
             print(f"{self.z}There is no session.json file. Logging in with username and password...")
 
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter username --=>:")
@@ -172,7 +172,7 @@ T) Set Target
                 session_data = {
                     "session_id": session_id
                 }
-                with open("src/session.json", "w") as file:
+                with open("session.json", "w") as file:
                     json.dump(session_data, file)
 
                 print(f"{self.z}{Fore.LIGHTGREEN_EX}Saved Session ID")
@@ -184,7 +184,7 @@ T) Set Target
 
         else:
 
-            with open("src/session.json", "r") as file:
+            with open("session.json", "r") as file:
                 session_data = json.load(file)
 
             session_id_value = session_data["session_id"]
@@ -479,8 +479,8 @@ Album:  {album}""")
 
         for photo in tqdm(self.photo_data):
             pk = photo.pk
-            if not os.path.exists("src/output"):
-                os.mkdir("src/output")
+            if not os.path.exists("output"):
+                os.mkdir("output")
 
             self.cl.photo_download(pk, folder="output")
 

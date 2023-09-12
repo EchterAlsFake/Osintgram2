@@ -26,6 +26,17 @@ from instagrapi import Client
 from colorama import *
 from tqdm import tqdm
 
+def replace_unencodable_with_space(s, encoding='utf-8'):
+    result = []
+    for c in s:
+        try:
+            c.encode(encoding)
+            result.append(c)
+        except UnicodeEncodeError:
+            result.append(' ')
+    return ''.join(result)
+
+
 
 def create_workspace(target_name):
     if not os.path.exists(target_name):
@@ -414,8 +425,7 @@ Text: {text}
         pk = info.pk
         zip = info.zip
         media = info.media_count
-
-        print(f"""
+        text = f"""
 -----------------Information for {full_name}--------------------------------------
 If something has 'None' as answer, it means, that there's no information about it.
 ----------------------------------------------------------------------------------
@@ -442,8 +452,9 @@ Profile Picture: {profile_pic}
 PK: {pk}
 ZIP: {zip}
 Total Media: {media}
-""")
-
+"""
+        filtered_text = replace_unencodable_with_space(text)
+        print(filtered_text)
         input("Press enter to continue...")
 
     def get_likes(self):

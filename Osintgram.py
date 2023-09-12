@@ -88,7 +88,7 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         self.followings = None
         self.stories = []
         self.medias_export = None
-        self.target = "Not specified"
+        self.target = False
         self.cl = Client()
         self.login()
         while True:
@@ -117,63 +117,113 @@ T) Set Target
 
 -------------------=>:""")
         if options == "1":
+            if not self.target:
+                self.get_target()
+
             self.get_location()
 
         elif options == "2":
+            if not self.target:
+                self.get_target()
+
             self.get_photos_captions()
 
         elif options == "3":
+            if not self.target:
+                self.get_target()
+
             self.get_comments()
 
         elif options == "4":
+            if not self.target:
+                self.get_target()
+
             self.get_followers()
 
         elif options == "5":
+            if not self.target:
+                self.get_target()
+
             self.get_followings()
 
         elif options == "6":
+            if not self.target:
+                self.get_target()
+
             self.get_email(mode="6")
 
         elif options == "7":
+            if not self.target:
+                self.get_target()
+
             self.get_email(mode="7")
 
         elif options == "8":
+            if not self.target:
+                self.get_target()
+
             self.get_number(mode="8")
 
         elif options == "9":
+            if not self.target:
+                self.get_target()
+
             self.get_number(mode="9")
 
         elif options == "10":
+            if not self.target:
+                self.get_target()
+
             self.get_info()
 
         elif options == "11":
+            if not self.target:
+                self.get_target()
+
             self.get_likes()
 
         elif options == "12":
+            if not self.target:
+                self.get_target()
+
             self.get_media_type()
 
         elif options == "13":
+            if not self.target:
+                self.get_target()
+
             self.download_photos()
 
         elif options == "14":
+            if not self.target:
+                self.get_target()
+
             self.download_propic()
 
         elif options == "15":
+            if not self.target:
+                self.get_target()
+
             self.download_stories()
 
         elif options == "16":
             exit(0)
 
         elif options == "T":
-            self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
-            self.clear_lists()
-            self.verify_target()
+            self.get_target()
+
+
+    def get_target(self):
+        self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
+        self.clear_lists()
+        self.verify_target()
 
     def login(self, password_login=False):
 
         if not os.path.isfile("session.json") or password_login:
             print(f"{self.z}There is no session.json file. Logging in with username and password...")
-
+            if not self.target:
+                self.get_target()
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter username --=>:")
             self.password = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter password --=>:")
             try:
@@ -500,6 +550,7 @@ Album:  {album}""")
         user_info = self.cl.user_info_v1(user_id)
         picture = user_info.profile_pic_url_hd
         wget.download(picture)
+        print(f"{self.z}{Fore.LIGHTCYAN_EX}Downloaded profile picture!")
 
     def download_stories(self):
         amount = input(

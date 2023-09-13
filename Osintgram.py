@@ -21,10 +21,12 @@ import instagrapi.exceptions
 import wget
 import os
 import json
+from logger import logger
 
 from instagrapi import Client
 from colorama import *
 from tqdm import tqdm
+
 
 def replace_unencodable_with_space(s, encoding='utf-8'):
     result = []
@@ -37,11 +39,14 @@ def replace_unencodable_with_space(s, encoding='utf-8'):
     return ''.join(result)
 
 
-
 def create_workspace(target_name):
+    folders = ["album", "igtv", "photos", "story", "profile_pic", "location"]
     if not os.path.exists(target_name):
         os.mkdir(target_name)
 
+    for folder in folders:
+        if not os.path.exists(f"{target_name}{os.sep}{folder}"):
+            os.mkdir(f"{target_name}{os.sep}{folder}")
 
 
 input("""
@@ -113,7 +118,8 @@ T) Set Target
 13) - photos          Download user's photos in output folder
 14) - propic          Download user's profile picture
 15) - stories         Download user's stories
-16) - Exit  
+16) - album           Download user's album
+17) - Exit  
 
 -------------------=>:""")
         if options == "1":
@@ -207,6 +213,9 @@ T) Set Target
             self.download_stories()
 
         elif options == "16":
+            self.download_album()
+
+        elif options == "17":
             exit(0)
 
         elif options == "T":
@@ -217,13 +226,12 @@ T) Set Target
         self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
         self.clear_lists()
         self.verify_target()
+        create_workspace(self.username)
 
     def login(self, password_login=False):
 
         if not os.path.isfile("session.json") or password_login:
             print(f"{self.z}There is no session.json file. Logging in with username and password...")
-            if not self.target:
-                self.get_target()
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter username --=>:")
             self.password = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter password --=>:")
             try:
@@ -285,7 +293,6 @@ T) Set Target
         self.medias_export = medias
         print(f"{self.z}{Fore.LIGHTGREEN_EX}Found {len(medias)} media files{Fore.RESET}")
         for media in medias:
-            print(media.media_type)
             if media.media_type == 1:
                 self.photo_data.append(media)
 
@@ -311,22 +318,32 @@ T) Set Target
         self.followings = None
 
     def get_location(self):
-        if len(self.photo_data) == 0 or self.photo_data is None:
-            print("No photo data.  Checking for media.....")
+
+        medias = self.photo_data + self.igtv_data + self.album_data + self.reel_data + self.stories
+        if len(medias) == 0:
+            print("No media data to analyze...  Checking for media...")
             self.get_media_raw()
 
         latitudes = []
         longitudes = []
 
-        for media in self.photo_data:
-            with contextlib.suppress(AttributeError):
-                latitudes.append(media.location.lat)
-                longitudes.append(media.location.lng)
-                print(f"""
-        {self.z}Found Location: {media.location.lat} : {media.location.lng}  First is lat, second is long.
-        """)
-        if len(latitudes) and not longitudes:
-            print(f"{self.x}{Fore.LIGHTYELLOW_EX} No location data found. Sorry.")
+        with open(f"{self.username}{os.sep}location{os.sep}location_data.txt", "a") as location_file:
+            for media in medias:
+                with contextlib.suppress(AttributeError):
+                    latitudes.append(media.location.lat)
+                    longitudes.append(media.location.lng)
+                    print(f"""
+{self.z}Found Location: {media.location.lat} : {media.location.lng}  First is lat, second is long.""")
+                    location_file.write(f"Latitude: {media.location.lat} : Longitude: {media.location.lng}")
+
+            if len(latitudes) and not longitudes:
+                print(f"{self.x}{Fore.LIGHTYELLOW_EX} No location data found. Sorry.")
+
+    def download_album(self):
+        for item in tqdm(self.album_data):
+            self.cl.album_download(item.pk, folder=f"{self.username}{os.sep}album{os.sep}")
+
+
 
     def get_photos_captions(self):
 
@@ -581,6 +598,3 @@ if __name__ == "__main__":
 
     except instagrapi.exceptions.UserNotFound:
         print("The user was not found. Try again")
-
-    except instagrapi.exceptions.ClientError:
-        print("Client Error: Use a different account or restart!")

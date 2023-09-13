@@ -1,0 +1,7 @@
+API: Instagrapi
+
+External libraries:
+
+wget
+colorama
+tqdm

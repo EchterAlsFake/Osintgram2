@@ -40,7 +40,8 @@ def replace_unencodable_with_space(s, encoding='utf-8'):
 
 
 def create_workspace(target_name):
-    folders = ["album", "igtv", "photos", "story", "profile_pic", "location"]
+    folders = ["album", "igtv", "photos", "story", "profile_pic", "location", "photos_captions", "comments",
+               "followers", "followings", "followers_email", "followings_email", "followers_number", "followings_number"]
     if not os.path.exists(target_name):
         os.mkdir(target_name)
 
@@ -81,7 +82,6 @@ My version of Osintgram uses a really stable API called 'instagrapi'
 
     def __init__(self):
         self.z = f"{Fore.LIGHTGREEN_EX}[+]{Fore.RESET}"
-        self.x = f"{Fore.LIGHTRED_EX}[~]{Fore.RESET}"
         self.username = None
         self.password = None
         self.photo_data = []
@@ -221,7 +221,6 @@ T) Set Target
         elif options == "T":
             self.get_target()
 
-
     def get_target(self):
         self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
         self.clear_lists()
@@ -231,12 +230,12 @@ T) Set Target
     def login(self, password_login=False):
 
         if not os.path.isfile("session.json") or password_login:
-            print(f"{self.z}There is no session.json file. Logging in with username and password...")
+            logger("There is no session.json file. Logging in with username and password...")
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter username --=>:")
             self.password = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter password --=>:")
             try:
                 self.cl.login(self.username, self.password)
-                print(f"{self.z}{Fore.LIGHTGREEN_EX}Login successful!")
+                logger(f"{Fore.LIGHTGREEN_EX}Login successful!")
                 session_id = self.cl.sessionid
                 session_data = {
                     "session_id": session_id
@@ -244,27 +243,25 @@ T) Set Target
                 with open("session.json", "w") as file:
                     json.dump(session_data, file)
 
-                print(f"{self.z}{Fore.LIGHTGREEN_EX}Saved Session ID")
+                logger(f"{Fore.LIGHTGREEN_EX}Saved Session ID")
 
             except instagrapi.exceptions.BadPassword or instagrapi.exceptions.BadCredentials:
-                print(f"{self.x}{Fore.LIGHTWHITE_EX}Wrong credentials. Please try again.")
+                logger(f"{Fore.LIGHTWHITE_EX}Wrong credentials. Please try again.")
                 self.login(password_login=True)
 
-
         else:
-
             with open("session.json", "r") as file:
                 session_data = json.load(file)
 
             session_id_value = session_data["session_id"]
-            print(f"{self.z}{Fore.LIGHTGREEN_EX}Found Session ID: {session_id_value}:")
+            logger(f"{Fore.LIGHTGREEN_EX}Found Session ID: {session_id_value}:")
             try:
 
                 self.cl.login_by_sessionid(session_id_value)
-                print(f"{self.z}{Fore.LIGHTGREEN_EX}Login successful!  Session ID: {self.cl.sessionid}")
+                logger(f"{Fore.LIGHTGREEN_EX}Login successful!  Session ID: {self.cl.sessionid}")
 
             except instagrapi.exceptions.BadPassword:
-                print(f"{self.x}{Fore.LIGHTRED_EX}Incorrect password!{Fore.RESET}")
+                logger(f"{Fore.LIGHTRED_EX}Incorrect password!{Fore.RESET}")
                 self.login()
 
     def get_target_id(self):
@@ -273,25 +270,25 @@ T) Set Target
     def verify_target(self):
         target_id = self.get_target_id()
         info = self.cl.user_info(target_id)
-        print(f"{self.z}{Fore.LIGHTCYAN_EX}Target: {info.full_name}")
+        logger(f"{Fore.LIGHTCYAN_EX}Target: {info.full_name}")
         self.target = target_id
         self.get_media_raw()
 
     def get_followers_raw(self):
         target_id = self.get_target_id()
-        print(f"{self.z}{Fore.LIGHTMAGENTA_EX}Requesting followers of {target_id}{Fore.RESET}")
+        logger(f"{Fore.LIGHTMAGENTA_EX}Requesting followers of {target_id}{Fore.RESET}")
         self.followers = self.cl.user_followers(user_id=target_id)
 
     def get_followings_raw(self):
         target_id = self.get_target_id()
-        print(f"{self.z}{Fore.LIGHTMAGENTA_EX}Requesting followings of {target_id}{Fore.RESET}")
+        logger(f"{Fore.LIGHTMAGENTA_EX}Requesting followings of {target_id}{Fore.RESET}")
         self.followings = self.cl.user_following(user_id=target_id)
 
     def get_media_raw(self):
-        print(f"{self.z}{Fore.LIGHTCYAN_EX}Requesting media objects for target: {self.target}")
+        logger(f"{Fore.LIGHTCYAN_EX}Requesting media objects for target: {self.target}")
         medias = self.cl.user_medias_v1(user_id=self.get_target_id())
         self.medias_export = medias
-        print(f"{self.z}{Fore.LIGHTGREEN_EX}Found {len(medias)} media files{Fore.RESET}")
+        logger(f"{Fore.LIGHTGREEN_EX}Found {len(medias)} media files{Fore.RESET}")
         for media in medias:
             if media.media_type == 1:
                 self.photo_data.append(media)
@@ -321,7 +318,7 @@ T) Set Target
 
         medias = self.photo_data + self.igtv_data + self.album_data + self.reel_data + self.stories
         if len(medias) == 0:
-            print("No media data to analyze...  Checking for media...")
+            logger("No media data to analyze...  Checking for media...")
             self.get_media_raw()
 
         latitudes = []
@@ -332,17 +329,18 @@ T) Set Target
                 with contextlib.suppress(AttributeError):
                     latitudes.append(media.location.lat)
                     longitudes.append(media.location.lng)
-                    print(f"""
-{self.z}Found Location: {media.location.lat} : {media.location.lng}  First is lat, second is long.""")
-                    location_file.write(f"Latitude: {media.location.lat} : Longitude: {media.location.lng}")
+                    logger(f"""
+Found Location: {media.location.lat} : {media.location.lng}  First is lat, second is long.""")
+                    location_file.write(f"Latitude: {media.location.lat} : Longitude: {media.location.lng}\n")
 
             if len(latitudes) and not longitudes:
-                print(f"{self.x}{Fore.LIGHTYELLOW_EX} No location data found. Sorry.")
+                logger(f"{Fore.LIGHTYELLOW_EX} No location data found. Sorry.")
 
     def download_album(self):
         for item in tqdm(self.album_data):
             self.cl.album_download(item.pk, folder=f"{self.username}{os.sep}album{os.sep}")
 
+        logger("Finished downloading :)")
 
 
     def get_photos_captions(self):
@@ -350,49 +348,56 @@ T) Set Target
         if len(self.photo_data) == 0 or self.photo_data is None:
             self.get_media_raw()
 
-        for media in self.photo_data:
-            print(f"""
-Media ID: {media.id}
-Caption: {media.caption_text}
-""")
+            if len(self.photo_data) == 0 or self.photo_data is None:
+                logger(msg="Target has no photos...", level=1)
+                self.menu()
 
-        input(f"{self.z}{Fore.LIGHTYELLOW_EX}Press ENTER to continue...")
+        with open(f"{self.username}{os.sep}photos_captions.txt", "w") as caption_file:
+            for media in self.photo_data:
+                data = f"""
+    Media ID: {media.id}
+    Caption: {media.caption_text}
+    """
+                print(data)
+                caption_file.write(f"{data}\n")
+
+        input(f"{Fore.LIGHTYELLOW_EX}Press ENTER to continue...")
 
     def get_comments(self):
         data = self.photo_data + self.igtv_data + self.reel_data + self.video_data + self.album_data
         media_ids = [item.id for item in data]
 
-        for id in media_ids:
-            comments = self.cl.media_comments(media_id=id)
-            print(f"{self.z}{Fore.LIGHTGREEN_EX}Found {len(comments)} comments in Media: {id}")
-            for comment in comments:
-                text = comment.text
-                created = comment.created_at_utc
-                likes = comment.like_count
-                user = comment.user.username
-
-                print(f"""
-User: {user}
-Commented at: {created}
-Likes: {likes}
-Text: {text}
-                     
-                """)
+        with open(f"{self.username}{os.sep}comments{os.sep}comments.txt") as comments_file:
+            for id in media_ids:
+                comments = self.cl.media_comments(media_id=id)
+                logger(f"{Fore.LIGHTGREEN_EX}Found {len(comments)} comments in Media: {id}")
+                for comment in comments:
+                    text = comment.text
+                    created = comment.created_at_utc
+                    likes = comment.like_count
+                    user = comment.user.username
+                    data = (f"""
+    User: {user}
+    Commented at: {created}
+    Likes: {likes}
+    Text: {text}""")
+                    logger(data)
+                    comments_file.write(f"{data}\n")
 
     def get_followers(self):
 
         user_id = self.get_target_id()
-        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter amount of followings you want to get  (0 for all) --=>:")
+        amount = input(f"{Fore.LIGHTYELLOW_EX}Enter amount of followings you want to get  (0 for all) --=>:")
         followings = self.cl.user_followers_v1(user_id, amount=int(amount))
         for counter, follower in enumerate(followings):
-            print(f"{counter}) Username: {follower.username}")
+            logger(f"{counter}) Username: {follower.username}")
 
     def get_followings(self):
         user_id = self.get_target_id()
         amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter amount of followings you want to get  (0 for all) --=>:")
         followings = self.cl.user_following_v1(user_id, amount=int(amount))
         for counter, follower in enumerate(followings):
-            print(f"{counter}) Username: {follower.username}")
+            logger(f"{counter}) Username: {follower.username}")
 
     def get_email(self, mode):
 
@@ -409,26 +414,29 @@ Text: {text}
         user_names = []
         valid_users = []
 
-        for follower in followers:
+        for follower in tqdm(followers):
             user_names.append(follower.username)
-            print(f"{self.z}{Fore.LIGHTMAGENTA_EX} Appended: {follower.username}")
+            logger(f"{Fore.LIGHTMAGENTA_EX} Appended: {follower.username}")
 
-        for username in user_names:
+        for username in tqdm(user_names):
             try:
                 email = self.cl.user_info_by_username(username)
-                if email is not None:
+                if email.public_email is not None:
                     emails.append(email.public_email)
                     valid_users.append(email.username)
-                    print(f"{self.z}{Fore.LIGHTMAGENTA_EX} Appended: Valid User: {email.username}")
-
-                else:
-                    print(f"User: {username} Does not have a public email.")
+                    logger(f"{Fore.LIGHTMAGENTA_EX} Appended: Valid User: {email.username}")
 
             except AttributeError:
                 pass
+        with open(f"{self.username}{os.sep}followers_email{os.sep}emails.txt", "w") as emails_file:
+            if len(emails) == 0:
+                logger(msg="Sorry, but none of the users has a public email address :(", level=1)
 
-        for counter, email in enumerate(emails):
-            print(f"{counter}) User: {user_names[counter]} Email: {email}")
+            else:
+                for counter, email in enumerate(emails):
+                    data = f"{counter}) User: {user_names[counter]} Email: {email}"
+                    logger(data)
+                    emails_file.write(f"{data}\n")
 
     def get_number(self, mode):
 
@@ -461,9 +469,12 @@ Text: {text}
                 if username not in valid_users:
                     valid_users.append(username)
 
-        for counter, user in enumerate(valid_users):
-            print(
-                f"{self.z}{Fore.LIGHTCYAN_EX}{counter}) Found Number {numbers[counter]} with Code: {codes[counter]} for User: {user}")
+        with open(f"{self.username}{os.sep}followers_number{os.sep}numbers.txt", "w") as followers_number_file:
+            for counter, user in enumerate(valid_users):
+                data = f"{Fore.LIGHTCYAN_EX}{counter}) Found Number {numbers[counter]} with Code: {codes[counter]} for User: {user}"
+                logger(data)
+                followers_number_file.write(f"{data}\n")
+
 
     def get_info(self):
 
@@ -521,7 +532,7 @@ ZIP: {zip}
 Total Media: {media}
 """
         filtered_text = replace_unencodable_with_space(text)
-        print(filtered_text)
+        logger(filtered_text)
         input("Press enter to continue...")
 
     def get_likes(self):
@@ -533,7 +544,7 @@ Total Media: {media}
             like_count = int(like_count)
             likes += like_count
 
-        print(f"Total Likes: {likes}")
+        logger(f"Total Likes: {likes}")
 
     def get_media_type(self):
 
@@ -543,7 +554,7 @@ Total Media: {media}
         video = len(self.video_data)
         album = len(self.album_data)
 
-        print(f"""
+        logger(f"""
     
 Photos: {photos}
 Reels:  {reels}
@@ -567,7 +578,7 @@ Album:  {album}""")
         user_info = self.cl.user_info_v1(user_id)
         picture = user_info.profile_pic_url_hd
         wget.download(picture)
-        print(f"{self.z}{Fore.LIGHTCYAN_EX}Downloaded profile picture!")
+        logger(f"{Fore.LIGHTCYAN_EX}Downloaded profile picture!")
 
     def download_stories(self):
         amount = input(
@@ -580,7 +591,7 @@ Album:  {album}""")
         for pk in tqdm(self.stories):
             self.cl.story_download(pk, folder="output")
 
-        print(f"{self.z}{Fore.LIGHTYELLOW_EX}Downloaded {len(stories)} stories")
+        logger(f"{Fore.LIGHTYELLOW_EX}Downloaded {len(stories)} stories")
 
 
 if __name__ == "__main__":
@@ -591,10 +602,10 @@ if __name__ == "__main__":
         exit(0)
 
     except instagrapi.exceptions.LoginRequired:
-        print("Instagram Error: Go to Instagram.com, solve the challenge and try again!")
+        logger("Instagram Error: Go to Instagram.com, solve the challenge and try again!")
 
     except instagrapi.exceptions.ChallengeRequired:
-        print("You need to solve a challenge. Go to instagram.com to do this!")
+        logger("You need to solve a challenge. Go to instagram.com to do this!")
 
     except instagrapi.exceptions.UserNotFound:
-        print("The user was not found. Try again")
+        logger("The user was not found. Try again")

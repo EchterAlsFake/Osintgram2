@@ -125,7 +125,7 @@ My version of Osintgram uses a really stable API called 'instagrapi'
 
         options = input(f"""{Fore.LIGHTWHITE_EX}
 T) Set Target
-0) Login             Needed for private account's you are following to
+0) - Login             Needed for private account's you are following to
 1) - addrs           Get all registered addressed by target photos
 2) - captions        Get user's photos captions
 3) - comments        Get total comments of target's posts

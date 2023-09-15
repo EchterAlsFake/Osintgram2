@@ -19,7 +19,7 @@
 
 --------
 My own features...
-- [] --> Make the program take up less API requests
+- [x] --> Make the program take up less API requests
 - [] --> Make CLI with click
 - [] --> Create GUI with PySide6
 - [] --> Create an Account menu for changing account related stuff

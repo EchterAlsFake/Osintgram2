@@ -21,8 +21,8 @@ import instagrapi.exceptions
 import wget
 import os
 import json
-from logger import logger
 
+from logger import logger
 from instagrapi import Client
 from colorama import *
 from tqdm import tqdm
@@ -51,26 +51,27 @@ def create_workspace(target_name):
 
 
 input("""
-Licensed under GPLv3
+Licensed Under GNU General Public License v3 (GPLv3)
 
-DISCLAIMER!
+Disclaimer:
 
-This tool is NOT allowed by Instagram.com
-It's against their ToS and you will get banned for it and you could even get into legal trouble!
-Of course second will probably not happen, but I am not liable for what happens to your account.
-When using this tool you know what you do and it's not my responsibility to protect your account.
+Usage of this tool is in violation of Instagram's Terms of Service, and could result in the suspension or banning of 
+your account. Legal repercussions may also be a possibility, although unlikely. The user assumes all responsibility 
+for any consequences arising from the utilization of this tool. I am not liable for any actions taken against your 
+account.
 
-This tool is made to help cyber security analysts and not some random kids to spy on someone.
+This tool is designed to assist cybersecurity analysts and is not intended for unauthorized surveillance or espionage 
+activities.
 
-The original creator of a similar tool also called Osintgram is 'Datalux'.
-You can find his project here: https://github.com/Datalux/Osintgram
+The original concept for a similar tool, named Osintgram, was developed by 'Datalux.' You can find his project here: 
+https://github.com/Datalux/Osintgram
 
-By continuing you accept that I am not liable for anything and that you do everything
+By proceeding, you acknowledge that I bear no liability for any repercussions and that you are using this tool entirely 
 at your own risk.
 
-Can you live with the consequences?
+Are you prepared to accept the potential consequences?
 
-Press enter if you can...
+Press Enter to continue if you are.
 """)
 
 
@@ -84,6 +85,7 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         self.z = f"{Fore.LIGHTGREEN_EX}[+]{Fore.RESET}"
         self.username = None
         self.password = None
+        self.logged_in = False
         self.photo_data = []
         self.video_data = []
         self.igtv_data = []
@@ -95,14 +97,35 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         self.medias_export = None
         self.target = False
         self.cl = Client()
-        self.login()
         while True:
             self.menu()
 
     def menu(self):
 
+        options_map = {
+            "0": "login",
+            "1": "get_location",
+            "2": "get_photos_captions",
+            "3": "get_comments",
+            "4": "get_followers",
+            "5": "get_followings",
+            "6": lambda: self.get_email(mode="6"),
+            "7": lambda: self.get_email(mode="7"),
+            "8": lambda: self.get_number(mode="8"),
+            "9": lambda: self.get_number(mode="9"),
+            "10": "get_info",
+            "11": "get_likes",
+            "12": "get_media_type",
+            "13": "download_photos",
+            "14": "download_propic",
+            "15": "download_stories",
+            "16": "download_album",
+            "17": exit
+        }
+
         options = input(f"""{Fore.LIGHTWHITE_EX}
 T) Set Target
+0) Login             Needed for private account's you are following to
 1) - addrs           Get all registered addressed by target photos
 2) - captions        Get user's photos captions
 3) - comments        Get total comments of target's posts
@@ -120,103 +143,16 @@ T) Set Target
 15) - stories         Download user's stories
 16) - album           Download user's album
 17) - Exit  
-
 -------------------=>:""")
-        if options == "1":
-            if not self.target:
-                self.get_target()
+        if options != "T" and options != "17" and not self.target:
+            self.get_target()
 
-            self.get_location()
-
-        elif options == "2":
-            if not self.target:
-                self.get_target()
-
-            self.get_photos_captions()
-
-        elif options == "3":
-            if not self.target:
-                self.get_target()
-
-            self.get_comments()
-
-        elif options == "4":
-            if not self.target:
-                self.get_target()
-
-            self.get_followers()
-
-        elif options == "5":
-            if not self.target:
-                self.get_target()
-
-            self.get_followings()
-
-        elif options == "6":
-            if not self.target:
-                self.get_target()
-
-            self.get_email(mode="6")
-
-        elif options == "7":
-            if not self.target:
-                self.get_target()
-
-            self.get_email(mode="7")
-
-        elif options == "8":
-            if not self.target:
-                self.get_target()
-
-            self.get_number(mode="8")
-
-        elif options == "9":
-            if not self.target:
-                self.get_target()
-
-            self.get_number(mode="9")
-
-        elif options == "10":
-            if not self.target:
-                self.get_target()
-
-            self.get_info()
-
-        elif options == "11":
-            if not self.target:
-                self.get_target()
-
-            self.get_likes()
-
-        elif options == "12":
-            if not self.target:
-                self.get_target()
-
-            self.get_media_type()
-
-        elif options == "13":
-            if not self.target:
-                self.get_target()
-
-            self.download_photos()
-
-        elif options == "14":
-            if not self.target:
-                self.get_target()
-
-            self.download_propic()
-
-        elif options == "15":
-            if not self.target:
-                self.get_target()
-
-            self.download_stories()
-
-        elif options == "16":
-            self.download_album()
-
-        elif options == "17":
-            exit(0)
+        method = options_map.get(options, None)
+        if method:
+            if callable(method):
+                method()
+            else:
+                getattr(self, method)()
 
         elif options == "T":
             self.get_target()
@@ -224,8 +160,20 @@ T) Set Target
     def get_target(self):
         self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
         self.clear_lists()
-        self.verify_target()
-        create_workspace(self.username)
+        if self.check_if_private():
+            self.verify_target()
+            create_workspace(self.username)
+
+    def check_if_private(self):
+        id = self.get_target_id()
+
+        try:
+            self.cl.user_medias(id, amount=1)
+            return True
+
+        except instagrapi.exceptions.PrivateAccount or instagrapi.exceptions.PrivateError:
+            logger("The Target is a private account. You need to follow the target in order to retrieve information!", level=1)
+            return False
 
     def login(self, password_login=False):
 
@@ -233,8 +181,10 @@ T) Set Target
             logger("There is no session.json file. Logging in with username and password...")
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter username --=>:")
             self.password = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter password --=>:")
+
             try:
                 self.cl.login(self.username, self.password)
+                self.logged_in = True
                 logger(f"{Fore.LIGHTGREEN_EX}Login successful!")
                 session_id = self.cl.sessionid
                 session_data = {
@@ -255,9 +205,10 @@ T) Set Target
 
             session_id_value = session_data["session_id"]
             logger(f"{Fore.LIGHTGREEN_EX}Found Session ID: {session_id_value}:")
-            try:
 
+            try:
                 self.cl.login_by_sessionid(session_id_value)
+                self.logged_in = True
                 logger(f"{Fore.LIGHTGREEN_EX}Login successful!  Session ID: {self.cl.sessionid}")
 
             except instagrapi.exceptions.BadPassword:
@@ -405,10 +356,10 @@ Found Location: {media.location.lat} : {media.location.lng}  First is lat, secon
             f"{self.z}{Fore.LIGHTYELLOW_EX}For how much followers / following you want to get emails for (10 followers will take like 20-30 seconds) --=>:")
         user_id = self.get_target_id()
         if mode == "6":
-            followers = self.cl.user_followers_v1(user_id, amount=int(amount))
-
+            followers = self.cl.user_followers(user_id, amount=int(amount))
+            open("")
         elif mode == "7":
-            followers = self.cl.user_following_v1(user_id, amount=int(amount))
+            followers = self.cl.user_following(user_id, amount=int(amount))
 
         emails = []
         user_names = []
@@ -479,7 +430,7 @@ Found Location: {media.location.lat} : {media.location.lng}  First is lat, secon
     def get_info(self):
 
         id = self.get_target_id()
-        info = self.cl.user_info_v1(id)
+        info = self.cl.user_info(id)
 
         full_name = info.full_name
         latitude = info.latitude
@@ -589,7 +540,7 @@ Album:  {album}""")
             self.stories.append(story.pk)
 
         for pk in tqdm(self.stories):
-            self.cl.story_download(pk, folder="output")
+            self.cl.story_download(pk, folder=f"{self.username}{os.sep}stories{os.sep}")
 
         logger(f"{Fore.LIGHTYELLOW_EX}Downloaded {len(stories)} stories")
 

@@ -41,7 +41,8 @@ def replace_unencodable_with_space(s, encoding='utf-8'):
 
 def create_workspace(target_name):
     folders = ["album", "igtv", "photos", "story", "profile_pic", "location", "photos_captions", "comments",
-               "followers", "followings", "followers_email", "followings_email", "followers_number", "followings_number"]
+               "followers", "followings", "followers_email", "followings_email", "followers_number", "followings_number",
+               "user_info"]
     if not os.path.exists(target_name):
         os.mkdir(target_name)
 
@@ -75,7 +76,7 @@ Press Enter to continue if you are.
 """)
 
 
-class Osintgram_like_datalux():
+class Osintgram:
     """
 Tries to be as Osintgram from Datalux, which is sadly dead, because the API is not working properly.
 My version of Osintgram uses a really stable API called 'instagrapi'
@@ -120,7 +121,8 @@ My version of Osintgram uses a really stable API called 'instagrapi'
             "14": "download_propic",
             "15": "download_stories",
             "16": "download_album",
-            "17": exit
+            "17": "get_igtv",
+            "18": exit
         }
 
         options = input(f"""{Fore.LIGHTWHITE_EX}
@@ -142,9 +144,10 @@ T) Set Target
 14) - propic          Download user's profile picture
 15) - stories         Download user's stories
 16) - album           Download user's album
-17) - Exit  
+17) - igtv            Get user's IGTV
+18) - Exit  
 -------------------=>:""")
-        if options != "T" and options != "17" and not self.target:
+        if options != "T" and options != "18" and options != "0" and not self.target:
             self.get_target()
 
         method = options_map.get(options, None)
@@ -160,24 +163,19 @@ T) Set Target
     def get_target(self):
         self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
         self.clear_lists()
-        if self.check_if_private():
-            self.verify_target()
-            create_workspace(self.username)
-
-    def check_if_private(self):
-        id = self.get_target_id()
-
-        try:
-            self.cl.user_medias(id, amount=1)
-            return True
-
-        except instagrapi.exceptions.PrivateAccount or instagrapi.exceptions.PrivateError:
-            logger("The Target is a private account. You need to follow the target in order to retrieve information!", level=1)
-            return False
+        target_id = self.get_target_id()
+        info = self.cl.user_info(target_id)
+        logger(f"{Fore.LIGHTCYAN_EX}Target: {info.full_name}")
+        self.target = target_id
+        self.get_media_raw()
+        create_workspace(self.username)
 
     def login(self, password_login=False):
-
         if not os.path.isfile("session.json") or password_login:
+
+            if os.path.exists("session.json"):
+                os.remove("session.json")
+
             logger("There is no session.json file. Logging in with username and password...")
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter username --=>:")
             self.password = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter password --=>:")
@@ -188,15 +186,15 @@ T) Set Target
                 logger(f"{Fore.LIGHTGREEN_EX}Login successful!")
                 session_id = self.cl.sessionid
                 session_data = {
-                    "session_id": session_id
-                }
+                    "session_id": session_id}
+
                 with open("session.json", "w") as file:
                     json.dump(session_data, file)
 
-                logger(f"{Fore.LIGHTGREEN_EX}Saved Session ID")
+                logger("Saved Session ID")
 
             except instagrapi.exceptions.BadPassword or instagrapi.exceptions.BadCredentials:
-                logger(f"{Fore.LIGHTWHITE_EX}Wrong credentials. Please try again.")
+                logger(f"{Fore.LIGHTWHITE_EX}Wrong credentials. Please try again.", level=1)
                 self.login(password_login=True)
 
         else:
@@ -211,32 +209,15 @@ T) Set Target
                 self.logged_in = True
                 logger(f"{Fore.LIGHTGREEN_EX}Login successful!  Session ID: {self.cl.sessionid}")
 
-            except instagrapi.exceptions.BadPassword:
-                logger(f"{Fore.LIGHTRED_EX}Incorrect password!{Fore.RESET}")
-                self.login()
+            except instagrapi.exceptions:
+                logger("Session ID is out of date. Recreating new session ID...", level=1)
+                self.login(password_login=True)
 
     def get_target_id(self):
         return self.cl.user_id_from_username(self.username)
 
-    def verify_target(self):
-        target_id = self.get_target_id()
-        info = self.cl.user_info(target_id)
-        logger(f"{Fore.LIGHTCYAN_EX}Target: {info.full_name}")
-        self.target = target_id
-        self.get_media_raw()
-
-    def get_followers_raw(self):
-        target_id = self.get_target_id()
-        logger(f"{Fore.LIGHTMAGENTA_EX}Requesting followers of {target_id}{Fore.RESET}")
-        self.followers = self.cl.user_followers(user_id=target_id)
-
-    def get_followings_raw(self):
-        target_id = self.get_target_id()
-        logger(f"{Fore.LIGHTMAGENTA_EX}Requesting followings of {target_id}{Fore.RESET}")
-        self.followings = self.cl.user_following(user_id=target_id)
-
     def get_media_raw(self):
-        logger(f"{Fore.LIGHTCYAN_EX}Requesting media objects for target: {self.target}")
+        logger(f"Retrieving media objects for: {self.target}")
         medias = self.cl.user_medias_v1(user_id=self.get_target_id())
         self.medias_export = medias
         logger(f"{Fore.LIGHTGREEN_EX}Found {len(medias)} media files{Fore.RESET}")
@@ -268,9 +249,6 @@ T) Set Target
     def get_location(self):
 
         medias = self.photo_data + self.igtv_data + self.album_data + self.reel_data + self.stories
-        if len(medias) == 0:
-            logger("No media data to analyze...  Checking for media...")
-            self.get_media_raw()
 
         latitudes = []
         longitudes = []
@@ -280,11 +258,10 @@ T) Set Target
                 with contextlib.suppress(AttributeError):
                     latitudes.append(media.location.lat)
                     longitudes.append(media.location.lng)
-                    logger(f"""
-Found Location: {media.location.lat} : {media.location.lng}  First is lat, second is long.""")
-                    location_file.write(f"Latitude: {media.location.lat} : Longitude: {media.location.lng}\n")
+                    data = f"Latitude:  {media.location.lat} : Longitude: {media.location.lng}"
+                    location_file.write(f"{data}\n")
 
-            if len(latitudes) and not longitudes:
+            if len(latitudes) and len(longitudes) == 0:
                 logger(f"{Fore.LIGHTYELLOW_EX} No location data found. Sorry.")
 
     def download_album(self):
@@ -293,24 +270,20 @@ Found Location: {media.location.lat} : {media.location.lng}  First is lat, secon
 
         logger("Finished downloading :)")
 
-
     def get_photos_captions(self):
-
         if len(self.photo_data) == 0 or self.photo_data is None:
-            self.get_media_raw()
+            logger(msg="Target has no photos...", level=1)
+            self.menu()
 
-            if len(self.photo_data) == 0 or self.photo_data is None:
-                logger(msg="Target has no photos...", level=1)
-                self.menu()
+        else:
+            with open(f"{self.username}{os.sep}photos_captions.txt", "w") as caption_file:
+                for media in self.photo_data:
+                    data = f"""
+Media ID: {media.id}
+Caption: {media.caption_text}"""
 
-        with open(f"{self.username}{os.sep}photos_captions.txt", "w") as caption_file:
-            for media in self.photo_data:
-                data = f"""
-    Media ID: {media.id}
-    Caption: {media.caption_text}
-    """
-                print(data)
-                caption_file.write(f"{data}\n")
+                    print(data)
+                    caption_file.write(f"{data}\n")
 
         input(f"{Fore.LIGHTYELLOW_EX}Press ENTER to continue...")
 
@@ -336,7 +309,6 @@ Found Location: {media.location.lat} : {media.location.lng}  First is lat, secon
                     comments_file.write(f"{data}\n")
 
     def get_followers(self):
-
         user_id = self.get_target_id()
         amount = input(f"{Fore.LIGHTYELLOW_EX}Enter amount of followings you want to get  (0 for all) --=>:")
         followings = self.cl.user_followers_v1(user_id, amount=int(amount))
@@ -351,7 +323,6 @@ Found Location: {media.location.lat} : {media.location.lng}  First is lat, secon
             logger(f"{counter}) Username: {follower.username}")
 
     def get_email(self, mode):
-
         amount = input(
             f"{self.z}{Fore.LIGHTYELLOW_EX}For how much followers / following you want to get emails for (10 followers will take like 20-30 seconds) --=>:")
         user_id = self.get_target_id()
@@ -375,13 +346,13 @@ Found Location: {media.location.lat} : {media.location.lng}  First is lat, secon
                 if email.public_email is not None:
                     emails.append(email.public_email)
                     valid_users.append(email.username)
-                    logger(f"{Fore.LIGHTMAGENTA_EX} Appended: Valid User: {email.username}")
 
             except AttributeError:
                 pass
+
         with open(f"{self.username}{os.sep}followers_email{os.sep}emails.txt", "w") as emails_file:
             if len(emails) == 0:
-                logger(msg="Sorry, but none of the users has a public email address :(", level=1)
+                logger(msg="Sorry, but none of the users have a public email address :(", level=1)
 
             else:
                 for counter, email in enumerate(emails):
@@ -390,22 +361,16 @@ Found Location: {media.location.lat} : {media.location.lng}  First is lat, secon
                     emails_file.write(f"{data}\n")
 
     def get_number(self, mode):
-
         if mode == "8":
-            if len(self.followers) == 0 or self.followers is None:
-                self.get_followers()
-
             followers = self.followers
 
         elif mode == "9":
-            if len(self.followings) == 0 or self.followings is None:
-                self.get_followings()
-
             followers = self.followings
 
         valid_users = []
         numbers = []
         codes = []
+
         usernames = [follower.username for follower in followers]
         for username in usernames:
             user_info = self.cl.user_info(user_id=self.cl.user_id_from_username(username))
@@ -426,6 +391,14 @@ Found Location: {media.location.lat} : {media.location.lng}  First is lat, secon
                 logger(data)
                 followers_number_file.write(f"{data}\n")
 
+    def get_igtv(self):
+        if len(self.igtv_data) == 0 or self.igtv_data is None:
+            logger("User has not IGTV data", level=1)
+
+        else:
+            for item in tqdm(self.igtv_data):
+                pk = item.pk
+                self.cl.igtv_download(pk, folder=f"{self.username}{os.sep}igtv{os.sep}")
 
     def get_info(self):
 
@@ -484,7 +457,8 @@ Total Media: {media}
 """
         filtered_text = replace_unencodable_with_space(text)
         logger(filtered_text)
-        input("Press enter to continue...")
+        with open(f"{self.username}{os.sep}user_info{os.sep}user_info.txt", "w") as user_info:
+            user_info.write(filtered_text)
 
     def get_likes(self):
         likes = 0
@@ -513,23 +487,17 @@ IGTV:   {igtv}
 Video:  {video}
 Album:  {album}""")
 
-        input("Press Enter to continue...")
-
     def download_photos(self):
-
         for photo in tqdm(self.photo_data):
             pk = photo.pk
-            if not os.path.exists("output"):
-                os.mkdir("output")
-
-            self.cl.photo_download(pk, folder="output")
+            self.cl.photo_download(pk, folder=f"{self.username}{os.sep}photos{os.sep}")
 
     def download_propic(self):
         user_id = self.get_target_id()
         user_info = self.cl.user_info_v1(user_id)
         picture = user_info.profile_pic_url_hd
-        wget.download(picture)
-        logger(f"{Fore.LIGHTCYAN_EX}Downloaded profile picture!")
+        wget.download(picture, out=f"{self.username}{os.sep}profile_pic{os.sep}")
+        logger(f"Downloaded profile picture!")
 
     def download_stories(self):
         amount = input(
@@ -542,21 +510,28 @@ Album:  {album}""")
         for pk in tqdm(self.stories):
             self.cl.story_download(pk, folder=f"{self.username}{os.sep}stories{os.sep}")
 
-        logger(f"{Fore.LIGHTYELLOW_EX}Downloaded {len(stories)} stories")
+        logger(f"Downloaded {len(stories)} stories")
 
 
 if __name__ == "__main__":
     try:
-        Osintgram_like_datalux()
+        Osintgram()
 
     except KeyboardInterrupt:
         exit(0)
 
     except instagrapi.exceptions.LoginRequired:
-        logger("Instagram Error: Go to Instagram.com, solve the challenge and try again!")
+        logger("Instagram Error: Go to Instagram.com, solve the challenge and try again!", level=1)
 
     except instagrapi.exceptions.ChallengeRequired:
-        logger("You need to solve a challenge. Go to instagram.com to do this!")
+        logger("You need to solve a challenge. Go to instagram.com to do this!", level=1)
 
     except instagrapi.exceptions.UserNotFound:
-        logger("The user was not found. Try again")
+        logger("The user was not found. Try again", level=1)
+
+    except instagrapi.exceptions.PrivateAccount:
+        logger("The User's account is private. You need to log in and follow the account in order to retrieve "
+               "information", level=1)
+
+    except instagrapi.exceptions.PleaseWaitFewMinutes:
+        logger("Timed out by instagram. Please wait a few minutes, change IP and try again!", level=1)

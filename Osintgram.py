@@ -122,7 +122,7 @@ My version of Osintgram uses a really stable API called 'instagrapi'
             "15": "download_stories",
             "16": "download_album",
             "17": "get_igtv",
-            "18": exit
+            "18": "exit"
         }
 
         options = input(f"""{Fore.LIGHTWHITE_EX}

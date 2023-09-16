@@ -27,16 +27,9 @@ if ! command_exists python3; then
     esac
 fi
 
-if ! command_exists pip; then
-    echo "Installing pip..."
-    case $distro in
-        "termux") pkg install python ;;
-        "arch") sudo pacman -S python-pip ;;
-        "fedora") sudo dnf install python3-pip ;;
-        "opensuse") sudo zypper install python3-pip ;;
-        "debian"|"ubuntu"|"kali"|"parrot") sudo apt update && sudo apt install -y python3-pip ;;
-        *) echo "Sorry, this distro is not supported" ;;
-    esac
+# Install python3-venv if needed
+if [ "$distro" == "debian" ] || [ "$distro" == "ubuntu" ] || [ "$distro" == "kali" ] || [ "$distro" == "parrot" ]; then
+    sudo apt update && sudo apt install -y python3-venv
 fi
 
 # 2) Check and install Git
@@ -60,8 +53,14 @@ fi
 # 4) Clone the repository
 git clone https://github.com/EchterAlsFake/Osintgram2
 
-# 5) cd into it and run pip install
+# 5) cd into it and create a virtual environment
 cd Osintgram2 || { echo "Failed to change directory to Osintgram2"; exit 1; }
+python3 -m venv osintgram_venv
+
+# Activate virtual environment
+source osintgram_venv/bin/activate
+
+# Install pip dependencies in the virtual environment
 pip install -r requirements.txt
 
 # 6) Run pyinstaller

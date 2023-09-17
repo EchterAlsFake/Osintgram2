@@ -172,17 +172,18 @@ T) Set Target
         if options != "T" and options != "18" and options != "0" and not self.target:
             self.get_target()
 
-        method = options_map.get(options, None)
-        if method:
-            if callable(method):
-                method()
-            else:
-                getattr(self, method)()
-
         elif options == "T":
             self.get_target()
 
-        elif options == "18":
+        try:
+            method = options_map.get(options, None)
+            if method:
+                if callable(method):
+                    method()
+                else:
+                    getattr(self, method)()
+
+        except AttributeError:
             exit()
 
     def get_target(self):

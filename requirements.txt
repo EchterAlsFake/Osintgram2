@@ -3,4 +3,3 @@ wget
 colorama
 pillow
 tqdm
-pyinstaller

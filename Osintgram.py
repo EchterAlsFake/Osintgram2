@@ -14,8 +14,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-
-
 import contextlib
 import instagrapi.exceptions
 import wget
@@ -26,6 +24,9 @@ from logger import logger
 from instagrapi import Client
 from colorama import *
 from tqdm import tqdm
+
+__version__ = "1.0"
+__author__ = "Johannes Habel | EchterAlsFake"
 
 
 def replace_unencodable_with_space(s, encoding='utf-8'):
@@ -41,7 +42,8 @@ def replace_unencodable_with_space(s, encoding='utf-8'):
 
 def create_workspace(target_name):
     folders = ["album", "igtv", "photos", "story", "profile_pic", "location", "photos_captions", "comments",
-               "followers", "followings", "followers_email", "followings_email", "followers_number", "followings_number",
+               "followers", "followings", "followers_email", "followings_email", "followers_number",
+               "followings_number",
                "user_info"]
     if not os.path.exists(target_name):
         os.mkdir(target_name)
@@ -99,7 +101,27 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         self.target = False
         self.cl = Client()
         while True:
-            self.menu()
+            try:
+                self.menu()
+
+            except KeyboardInterrupt:
+                exit(0)
+
+            except instagrapi.exceptions.LoginRequired:
+                logger("Instagram wants you to login. Please change your IP or Login to continue", level=1)
+
+            except instagrapi.exceptions.ChallengeRequired:
+                logger("You need to solve a challenge. Go to instagram.com to do this!", level=1)
+
+            except instagrapi.exceptions.UserNotFound:
+                logger("The user was not found. Try again", level=1)
+
+            except instagrapi.exceptions.PrivateAccount:
+                logger("The User's account is private. You need to log in and follow the account in order to retrieve "
+                       "information", level=1)
+
+            except instagrapi.exceptions.PleaseWaitFewMinutes:
+                logger("Timed out by instagram. Please wait a few minutes, change IP and try again!", level=1)
 
     def menu(self):
 
@@ -159,6 +181,9 @@ T) Set Target
 
         elif options == "T":
             self.get_target()
+
+        elif options == "18":
+            exit()
 
     def get_target(self):
         self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
@@ -220,7 +245,7 @@ T) Set Target
         logger(f"Retrieving media objects for: {self.target}")
         medias = self.cl.user_medias_v1(user_id=self.get_target_id())
         self.medias_export = medias
-        logger(f"{Fore.LIGHTGREEN_EX}Found {len(medias)} media files{Fore.RESET}")
+        logger(f"Found {len(medias)} media files{Fore.RESET}")
         for media in medias:
             if media.media_type == 1:
                 self.photo_data.append(media)
@@ -324,7 +349,7 @@ Caption: {media.caption_text}"""
 
     def get_email(self, mode):
         amount = input(
-            f"{self.z}{Fore.LIGHTYELLOW_EX}For how much followers / following you want to get emails for (10 followers will take like 20-30 seconds) --=>:")
+            f"{self.z}{Fore.LIGHTYELLOW_EX}For how much followers / following you want to get emails for (0 for all)--=>:")
         user_id = self.get_target_id()
         if mode == "6":
             followers = self.cl.user_followers(user_id, amount=int(amount))
@@ -440,11 +465,11 @@ Latitude: {latitude}
 Longitude: {longitude}
 Contact Phone: {contact_phone}
 Business contact method: {business_contact_method}
-Business catefory name: {business_category_name}
+Business category name: {business_category_name}
 Public Phone Number: {public_phone_number}
 Public Phone country code: {public_country_code}
 Public E-Mail: {public_email}
-Catefory: {category}
+Category: {category}
 Account type: {account_type}
 Address street: {address_steet}
 City ID: {city_id}
@@ -514,24 +539,4 @@ Album:  {album}""")
 
 
 if __name__ == "__main__":
-    try:
-        Osintgram()
-
-    except KeyboardInterrupt:
-        exit(0)
-
-    except instagrapi.exceptions.LoginRequired:
-        logger("Instagram Error: Go to Instagram.com, solve the challenge and try again!", level=1)
-
-    except instagrapi.exceptions.ChallengeRequired:
-        logger("You need to solve a challenge. Go to instagram.com to do this!", level=1)
-
-    except instagrapi.exceptions.UserNotFound:
-        logger("The user was not found. Try again", level=1)
-
-    except instagrapi.exceptions.PrivateAccount:
-        logger("The User's account is private. You need to log in and follow the account in order to retrieve "
-               "information", level=1)
-
-    except instagrapi.exceptions.PleaseWaitFewMinutes:
-        logger("Timed out by instagram. Please wait a few minutes, change IP and try again!", level=1)
+    Osintgram()

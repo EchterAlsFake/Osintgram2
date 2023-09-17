@@ -20,8 +20,10 @@
 --------
 My own features...
 - [x] --> Make the program take up less API requests
+- [x] --> Download IGTV
+- [x] --> Download Album
 - [] --> Make CLI with click
 - [] --> Create GUI with PySide6
 - [] --> Create an Account menu for changing account related stuff
-- [] --> Create 2FA support for GUI (depends on Instagrapi)
+- [] --> Create 2FA support
 I am constantly working on the features. Please give me some time...

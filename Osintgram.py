@@ -40,11 +40,22 @@ def replace_unencodable_with_space(s, encoding='utf-8'):
     return ''.join(result)
 
 
-def create_workspace(target_name):
+def create_workspace(target_name, hashtag_name=False):
     folders = ["album", "igtv", "photos", "story", "profile_pic", "location", "photos_captions", "comments",
                "followers", "followings", "followers_email", "followings_email", "followers_number",
                "followings_number",
                "user_info"]
+
+    folders_hashtag = ["hashtag_media"]
+
+    if not hashtag_name == False:
+        if not os.path.exists(hashtag_name):
+            os.mkdir(hashtag_name)
+
+    for folder in folders_hashtag:
+        if not os.path.exists(f"{hashtag_name}{os.sep}{folder}"):
+            os.mkdir(f"{hashtag_name}{os.sep}{folder}")
+
     if not os.path.exists(target_name):
         os.mkdir(target_name)
 
@@ -144,7 +155,9 @@ My version of Osintgram uses a really stable API called 'instagrapi'
             "15": "download_stories",
             "16": "download_album",
             "17": "get_igtv",
-            "18": "exit"
+            "18": "get_hashtags_media",
+            "19": "search_hashtags",
+            "20": "exit"
         }
 
         options = input(f"""{Fore.LIGHTWHITE_EX}
@@ -167,24 +180,25 @@ T) Set Target
 15) - stories         Download user's stories
 16) - album           Download user's album
 17) - igtv            Get user's IGTV
-18) - Exit  
+18) - hashtag_media   Get all media files from a specific hashtag
+19) - hashtag_search  Search for hashtags with a search query
+20) - Exit  
 -------------------=>:""")
-        if options != "T" and options != "18" and options != "0" and not self.target:
+        if options != "T" and options != "20" and options != "0" and options != "19" and options != "18" and not self.target:
             self.get_target()
 
         elif options == "T":
             self.get_target()
 
-        try:
-            method = options_map.get(options, None)
-            if method:
-                if callable(method):
-                    method()
-                else:
-                    getattr(self, method)()
-
-        except AttributeError:
+        elif options == "20":
             exit()
+
+        method = options_map.get(options, None)
+        if method:
+            if callable(method):
+                method()
+            else:
+                getattr(self, method)()
 
     def get_target(self):
         self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
@@ -537,6 +551,102 @@ Album:  {album}""")
             self.cl.story_download(pk, folder=f"{self.username}{os.sep}stories{os.sep}")
 
         logger(f"Downloaded {len(stories)} stories")
+
+    def get_hashtags_media(self):
+        hashtag = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter the hashtag without # -->:")
+        mode = input(f"""
+Pick the sorting:
+
+1) All hashtag medias
+2) Recent hashtag medias
+3) Top hashtag medias
+------------------=>:""")
+
+        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter the amount (0 for all) -->:")
+
+        if mode == "1":
+            hashtag_object = self.cl.hashtag_medias_v1(hashtag, amount=int(amount))
+
+        elif mode == "2":
+            hashtag_object = self.cl.hashtag_medias_recent(hashtag, amount=int(amount))
+
+        elif mode == "3":
+            hashtag_object = self.cl.hashtag_medias_top(hashtag, amount=int(amount))
+
+        photo_data = []
+        video_data = []
+        igtv_data = []
+        reel_data = []
+        album_data = []
+
+        for item in hashtag_object:
+            if item.media_type == 1:
+                photo_data.append(item)
+
+            elif item.media_type == 2 and item.product_type == "feed":
+                video_data.append(item)
+
+            elif item.media_type == 2 and item.product_type == "igtv":
+                igtv_data.append(item)
+
+            elif item.media_type == 2 and item.product_type == "clips":
+                reel_data.append(item)
+
+            elif item.media_type == 8:
+                album_data.append(item)
+
+        select_downloads = input(f"""
+Select the type of media you want to download:
+
+1) Photos
+2) Videos
+3) IGTV
+4) Reels
+5) Albums
+-----------------(separate with comma e.g 1,2,3) --=>:""")
+
+        folders = ["photos", "videos", "igtv", "reels", "albums"]
+
+        for folder in folders:
+            if not os.path.exists(f"{hashtag}{os.sep}{folder}"):
+                os.mkdir(f"{hashtag}{os.sep}{folder}")
+
+        choices = select_downloads.split(",")
+        for choice in choices:
+            if choice == "1":
+                for photo in tqdm(photo_data):
+                    self.cl.photo_download(media_pk=photo.pk, folder=f"{hashtag}{os.sep}photos{os.sep}")
+
+            if choice == "2":
+                for video in tqdm(video_data):
+                    self.cl.video_download(media_pk=video.pk, folder=f"{hashtag}{os.sep}videos{os.sep}")
+
+            if choice == "3":
+                for igtv in tqdm(igtv_data):
+                    self.cl.igtv_download(media_pk=igtv.pk, folder=f"{hashtag}{os.sep}igtv{os.sep}")
+
+            if choice == "4":
+                for reel in tqdm(reel_data):
+                    self.cl.clip_download(media_pk=reel.pk, folder=f"{hashtag}{os.sep}reels{os.sep}")
+
+            if choice == "5":
+                for album in tqdm(album_data):
+                    self.cl.album_download(media_pk=album.pk, folder=f"{hashtag}{os.sep}albums{os.sep}")
+
+
+        logger("All done :)")
+
+    def search_hashtags(self):
+        query = input(f"{self.z}{Fore.LIGHTMAGENTA_EX}Enter search query --=>:")
+        hashtags = self.cl.search_hashtags(query)
+        for hashtag in hashtags:
+            print(f"""
+ID: {hashtag.id}
+Name: {hashtag.name}
+Media Count: {hashtag.media_count}
+----------------------------------""")
+
+
 
 
 if __name__ == "__main__":

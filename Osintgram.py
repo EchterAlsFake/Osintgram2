@@ -79,6 +79,34 @@ Press Enter to continue if you are.
 """)
 
 
+def sort_data_types(data_packet):
+
+    photo_data = []
+    video_data = []
+    igtv_data = []
+    reel_data = []
+    album_data = []
+
+
+    for item in data_packet:
+        if item.media_type == 1:
+            photo_data.append(item)
+
+        elif item.media_type == 2 and item.product_type == "feed":
+            video_data.append(item)
+
+        elif item.media_type == 2 and item.product_type == "igtv":
+            igtv_data.append(item)
+
+        elif item.media_type == 2 and item.product_type == "clips":
+            reel_data.append(item)
+
+        elif item.media_type == 8:
+            album_data.append(item)
+
+    return [photo_data, video_data, igtv_data, reel_data, album_data]
+
+
 class Osintgram:
     """
 Tries to be as Osintgram from Datalux, which is sadly dead, because the API is not working properly.
@@ -251,7 +279,7 @@ T) Set Target
         medias = self.cl.user_medias_v1(user_id=self.get_target_id())
         self.medias_export = medias
         logger(f"Found {len(medias)} media files{Fore.RESET}")
-        data = self.sort_data_types(medias)
+        data = sort_data_types(medias)
         self.photo_data = data[0]
         self.video_data = data[1]
         self.igtv_data = data[2]
@@ -481,33 +509,6 @@ Total Media: {media}
         with open(f"{self.username}{os.sep}user_info{os.sep}user_info.txt", "w") as user_info:
             user_info.write(filtered_text)
 
-    def sort_data_types(self, data_packet):
-
-        photo_data = []
-        video_data = []
-        igtv_data = []
-        reel_data = []
-        album_data = []
-
-
-        for item in data_packet:
-            if item.media_type == 1:
-                photo_data.append(item)
-
-            elif item.media_type == 2 and item.product_type == "feed":
-                video_data.append(item)
-
-            elif item.media_type == 2 and item.product_type == "igtv":
-                igtv_data.append(item)
-
-            elif item.media_type == 2 and item.product_type == "clips":
-                reel_data.append(item)
-
-            elif item.media_type == 8:
-                album_data.append(item)
-
-        return [photo_data, video_data, igtv_data, reel_data, album_data]
-
     def get_likes(self):
         likes = 0
 
@@ -573,7 +574,7 @@ top)     Top hashtag medias
         amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter the amount (0 for all) -->:")
         hashtag_object = self.cl.hashtag_medias_v1(name=str(hashtag), tab_key=str(mode), amount=int(amount))
         print("Done")
-        data = self.sort_data_types(hashtag_object)
+        data = sort_data_types(hashtag_object)
         photo_data = data[0]
         video_data = data[1]
         igtv_data = data[2]

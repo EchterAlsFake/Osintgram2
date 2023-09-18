@@ -40,21 +40,11 @@ def replace_unencodable_with_space(s, encoding='utf-8'):
     return ''.join(result)
 
 
-def create_workspace(target_name, hashtag_name=False):
+def create_workspace(target_name):
     folders = ["album", "igtv", "photos", "story", "profile_pic", "location", "photos_captions", "comments",
                "followers", "followings", "followers_email", "followings_email", "followers_number",
                "followings_number",
                "user_info"]
-
-    folders_hashtag = ["hashtag_media"]
-
-    if not hashtag_name == False:
-        if not os.path.exists(hashtag_name):
-            os.mkdir(hashtag_name)
-
-    for folder in folders_hashtag:
-        if not os.path.exists(f"{hashtag_name}{os.sep}{folder}"):
-            os.mkdir(f"{hashtag_name}{os.sep}{folder}")
 
     if not os.path.exists(target_name):
         os.mkdir(target_name)
@@ -163,25 +153,25 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         options = input(f"""{Fore.LIGHTWHITE_EX}
 T) Set Target
 0) - Login             Needed for private account's you are following to
-1) - addrs           Get all registered addressed by target photos
-2) - captions        Get user's photos captions
-3) - comments        Get total comments of target's posts
-4) - followers       Get target followers
-5) - followings      Get users followed by target
-6) - fwersemail      Get email of target followers
-7) - fwingsemail     Get email of users followed by target
-8) - fwersnumber     Get phone number of target followers
-9) - fwingsnumber    Get phone number of users followed by target
-10) - info            Get target info
-11) - likes           Get total likes of target's posts
-12) - mediatype       Get user's posts type (photo or video)
-13) - photos          Download user's photos in output folder
-14) - propic          Download user's profile picture
-15) - stories         Download user's stories
-16) - album           Download user's album
-17) - igtv            Get user's IGTV
-18) - hashtag_media   Get all media files from a specific hashtag
-19) - hashtag_search  Search for hashtags with a search query
+1) - addrs             Get all registered addressed by target photos
+2) - captions          Get user's photos captions
+3) - comments          Get total comments of target's posts
+4) - followers         Get target followers
+5) - followings        Get users followed by target
+6) - fwersemail        Get email of target followers
+7) - fwingsemail       Get email of users followed by target
+8) - fwersnumber       Get phone number of target followers
+9) - fwingsnumber      Get phone number of users followed by target
+10) - info             Get target info
+11) - likes            Get total likes of target's posts
+12) - mediatype        Get user's posts type (photo or video)
+13) - photos           Download user's photos in output folder
+14) - propic           Download user's profile picture
+15) - stories          Download user's stories
+16) - album            Download user's album
+17) - igtv             Get user's IGTV
+18) - hashtag_media    Get all media files from a specific hashtag
+19) - hashtag_search   Search for hashtags with a search query
 20) - Exit  
 -------------------=>:""")
         if options != "T" and options != "20" and options != "0" and options != "19" and options != "18" and not self.target:
@@ -262,11 +252,11 @@ T) Set Target
         self.medias_export = medias
         logger(f"Found {len(medias)} media files{Fore.RESET}")
         data = self.sort_data_types(medias)
-        self.photo_data.append(data[0])
-        self.video_data.append(data[1])
-        self.igtv_data.append(data[2])
-        self.reel_data.append(data[3])
-        self.album_data.append(data[4])
+        self.photo_data = data[0]
+        self.video_data = data[1]
+        self.igtv_data = data[2]
+        self.reel_data = data[3]
+        self.album_data = data[4]
 
     def clear_lists(self):
         self.video_data = []
@@ -359,7 +349,7 @@ Caption: {media.caption_text}"""
         user_id = self.get_target_id()
         if mode == "6":
             followers = self.cl.user_followers(user_id, amount=int(amount))
-            open("")
+
         elif mode == "7":
             followers = self.cl.user_following(user_id, amount=int(amount))
 
@@ -517,8 +507,6 @@ Total Media: {media}
                 album_data.append(item)
 
         return [photo_data, video_data, igtv_data, reel_data, album_data]
-
-
 
     def get_likes(self):
         likes = 0

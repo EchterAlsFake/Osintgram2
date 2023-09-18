@@ -23,9 +23,7 @@ My own features...
 - [x] --> Download IGTV
 - [x] --> Download Album
 - []  --> Download videos / clips
-- [] --> Search lat, lng automatically for address
 - [] --> Make CLI with click
-- [] --> Create GUI with PySide6
 - [] --> Create an Account menu for changing account related stuff
 - [] --> Create 2FA support
 I am constantly working on the features. Please give me some time...

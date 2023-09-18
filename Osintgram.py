@@ -261,21 +261,12 @@ T) Set Target
         medias = self.cl.user_medias_v1(user_id=self.get_target_id())
         self.medias_export = medias
         logger(f"Found {len(medias)} media files{Fore.RESET}")
-        for media in medias:
-            if media.media_type == 1:
-                self.photo_data.append(media)
-
-            elif media.media_type == 2 and media.product_type == "feed":
-                self.video_data.append(media)
-
-            elif media.media_type == 2 and media.product_type == "igtv":
-                self.igtv_data.append(media)
-
-            elif media.media_type == 2 and media.product_type == "clips":
-                self.reel_data.append(media)
-
-            elif media.media_type == 8:
-                self.album_data.append(media)
+        data = self.sort_data_types(medias)
+        self.photo_data.append(data[0])
+        self.video_data.append(data[1])
+        self.igtv_data.append(data[2])
+        self.reel_data.append(data[3])
+        self.album_data.append(data[4])
 
     def clear_lists(self):
         self.video_data = []
@@ -500,6 +491,35 @@ Total Media: {media}
         with open(f"{self.username}{os.sep}user_info{os.sep}user_info.txt", "w") as user_info:
             user_info.write(filtered_text)
 
+    def sort_data_types(self, data_packet):
+
+        photo_data = []
+        video_data = []
+        igtv_data = []
+        reel_data = []
+        album_data = []
+
+
+        for item in data_packet:
+            if item.media_type == 1:
+                photo_data.append(item)
+
+            elif item.media_type == 2 and item.product_type == "feed":
+                video_data.append(item)
+
+            elif item.media_type == 2 and item.product_type == "igtv":
+                igtv_data.append(item)
+
+            elif item.media_type == 2 and item.product_type == "clips":
+                reel_data.append(item)
+
+            elif item.media_type == 8:
+                album_data.append(item)
+
+        return [photo_data, video_data, igtv_data, reel_data, album_data]
+
+
+
     def get_likes(self):
         likes = 0
 
@@ -573,27 +593,12 @@ Pick the sorting:
         elif mode == "3":
             hashtag_object = self.cl.hashtag_medias_top(hashtag, amount=int(amount))
 
-        photo_data = []
-        video_data = []
-        igtv_data = []
-        reel_data = []
-        album_data = []
-
-        for item in hashtag_object:
-            if item.media_type == 1:
-                photo_data.append(item)
-
-            elif item.media_type == 2 and item.product_type == "feed":
-                video_data.append(item)
-
-            elif item.media_type == 2 and item.product_type == "igtv":
-                igtv_data.append(item)
-
-            elif item.media_type == 2 and item.product_type == "clips":
-                reel_data.append(item)
-
-            elif item.media_type == 8:
-                album_data.append(item)
+        data = self.sort_data_types(hashtag_object)
+        photo_data = data[0]
+        video_data = data[1]
+        igtv_data = data[2]
+        reel_data = data[3]
+        album_data = data[4]
 
         select_downloads = input(f"""
 Select the type of media you want to download:
@@ -645,8 +650,6 @@ ID: {hashtag.id}
 Name: {hashtag.name}
 Media Count: {hashtag.media_count}
 ----------------------------------""")
-
-
 
 
 if __name__ == "__main__":

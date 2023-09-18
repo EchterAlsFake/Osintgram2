@@ -577,22 +577,14 @@ Album:  {album}""")
         mode = input(f"""
 Pick the sorting:
 
-1) All hashtag medias
-2) Recent hashtag medias
-3) Top hashtag medias
+clips)   Clips hashtag medias
+recent)  Recent hashtag medias
+top)     Top hashtag medias
 ------------------=>:""")
 
         amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter the amount (0 for all) -->:")
-
-        if mode == "1":
-            hashtag_object = self.cl.hashtag_medias_v1(hashtag, amount=int(amount))
-
-        elif mode == "2":
-            hashtag_object = self.cl.hashtag_medias_recent(hashtag, amount=int(amount))
-
-        elif mode == "3":
-            hashtag_object = self.cl.hashtag_medias_top(hashtag, amount=int(amount))
-
+        hashtag_object = self.cl.hashtag_medias_v1(name=str(hashtag), tab_key=str(mode), amount=int(amount))
+        print("Done")
         data = self.sort_data_types(hashtag_object)
         photo_data = data[0]
         video_data = data[1]
@@ -603,14 +595,17 @@ Pick the sorting:
         select_downloads = input(f"""
 Select the type of media you want to download:
 
-1) Photos
-2) Videos
-3) IGTV
-4) Reels
-5) Albums
+1) Photos : {len(photo_data)}
+2) Videos : {len(video_data)}
+3) IGTV   : {len(album_data)}
+4) Reels  : {len(reel_data)}
+5) Albums : {len(album_data)}
 -----------------(separate with comma e.g 1,2,3) --=>:""")
 
         folders = ["photos", "videos", "igtv", "reels", "albums"]
+
+        if not os.path.exists(hashtag):
+            os.mkdir(hashtag)
 
         for folder in folders:
             if not os.path.exists(f"{hashtag}{os.sep}{folder}"):

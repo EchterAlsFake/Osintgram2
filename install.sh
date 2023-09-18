@@ -62,6 +62,7 @@ source osintgram_venv/bin/activate
 
 # Install pip dependencies in the virtual environment
 pip install -r requirements.txt
+pip install pyinstaller
 
 # 6) Run pyinstaller
 pyinstaller -F Osintgram.py

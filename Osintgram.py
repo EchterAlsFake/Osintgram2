@@ -25,7 +25,7 @@ from instagrapi import Client
 from colorama import *
 from tqdm import tqdm
 
-__version__ = "1.1KIKikk1"
+__version__ = "1.1"
 __author__ = "Johannes Habel | EchterAlsFake"
 
 

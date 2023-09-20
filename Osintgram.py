@@ -25,7 +25,7 @@ from instagrapi import Client
 from colorama import *
 from tqdm import tqdm
 
-__version__ = "1.0"
+__version__ = "1.1KIKikk1"
 __author__ = "Johannes Habel | EchterAlsFake"
 
 
@@ -161,6 +161,9 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         }
 
         options = input(f"""{Fore.LIGHTWHITE_EX}
+RED: Needs Login
+Note: Accessing a private account ALWAYS requires login for everything!
+
 T) Set Target
 0) - Login             Needed for private account's you are following to
 1) - addrs           Get all registered addressed by target photos
@@ -180,9 +183,9 @@ T) Set Target
 15) - stories         Download user's stories
 16) - album           Download user's album
 17) - igtv            Get user's IGTV
-18) - hashtag_media   Get all media files from a specific hashtag
-19) - hashtag_search  Search for hashtags with a search query
-20) - Exit  
+{Fore.LIGHTRED_EX}18) - hashtag_media   Get all media files from a specific hashtag
+{Fore.LIGHTRED_EX}19) - hashtag_search  Search for hashtags with a search query
+{Fore.LIGHTWHITE_EX}20) - Exit  
 -------------------=>:""")
         if options != "T" and options != "20" and options != "0" and options != "19" and options != "18" and not self.target:
             self.get_target()

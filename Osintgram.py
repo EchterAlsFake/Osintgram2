@@ -46,16 +46,6 @@ def create_workspace(target_name, hashtag_name=False):
                "followings_number",
                "user_info"]
 
-    folders_hashtag = ["hashtag_media"]
-
-    if not hashtag_name == False:
-        if not os.path.exists(hashtag_name):
-            os.mkdir(hashtag_name)
-
-    for folder in folders_hashtag:
-        if not os.path.exists(f"{hashtag_name}{os.sep}{folder}"):
-            os.mkdir(f"{hashtag_name}{os.sep}{folder}")
-
     if not os.path.exists(target_name):
         os.mkdir(target_name)
 
@@ -157,11 +147,11 @@ My version of Osintgram uses a really stable API called 'instagrapi'
             "17": "get_igtv",
             "18": "get_hashtags_media",
             "19": "search_hashtags",
-            "20": "exit"
+            "20": "exit()"
         }
 
         options = input(f"""{Fore.LIGHTWHITE_EX}
-RED: Needs Login
+{Fore.LIGHTRED_EX}RED{Fore.LIGHTWHITE_EX}: Needs Login
 Note: Accessing a private account ALWAYS requires login for everything!
 
 T) Set Target
@@ -183,8 +173,8 @@ T) Set Target
 15) - stories         Download user's stories
 16) - album           Download user's album
 17) - igtv            Get user's IGTV
-{Fore.LIGHTRED_EX}18) - hashtag_media   Get all media files from a specific hashtag
-{Fore.LIGHTRED_EX}19) - hashtag_search  Search for hashtags with a search query
+{Fore.LIGHTRED_EX}18) - hashtag_media   {Fore.LIGHTWHITE_EX}Get all media files from a specific hashtag
+{Fore.LIGHTRED_EX}19) - hashtag_search  {Fore.LIGHTWHITE_EX}Search for hashtags with a search query
 {Fore.LIGHTWHITE_EX}20) - Exit  
 -------------------=>:""")
         if options != "T" and options != "20" and options != "0" and options != "19" and options != "18" and not self.target:
@@ -204,14 +194,19 @@ T) Set Target
                 getattr(self, method)()
 
     def get_target(self):
-        self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
-        self.clear_lists()
-        target_id = self.get_target_id()
-        info = self.cl.user_info(target_id)
-        logger(f"{Fore.LIGHTCYAN_EX}Target: {info.full_name}")
-        self.target = target_id
-        self.get_media_raw()
-        create_workspace(self.username)
+        try:
+            self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
+            self.clear_lists()
+            target_id = self.get_target_id()
+            info = self.cl.user_info(target_id)
+            logger(f"{Fore.LIGHTCYAN_EX}Target: {info.full_name}")
+            self.target = self.username
+            self.get_media_raw()
+            create_workspace(self.username)
+
+        except instagrapi.exceptions.PrivateAccount or instagrapi.exceptions.PrivateError:
+            logger(f"{Fore.LIGHTMAGENTA_EX}User is a private account. Log in to your account and follow him / her")
+            self.get_target()
 
     def login(self, password_login=False):
         if not os.path.isfile("session.json") or password_login:

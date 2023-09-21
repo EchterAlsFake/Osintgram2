@@ -108,8 +108,8 @@ My version of Osintgram uses a really stable API called 'instagrapi'
             except KeyboardInterrupt:
                 exit(0)
 
-            except instagrapi.exceptions.LoginRequired:
-                logger("Instagram wants you to login. Please change your IP or Login to continue", level=1)
+            except instagrapi.exceptions.LoginRequired as e:
+                logger(f"Instagram wants you to login. Please change your IP or Login to continue : {e}", level=1)
 
             except instagrapi.exceptions.ChallengeRequired:
                 logger("You need to solve a challenge. Go to instagram.com to do this!", level=1)
@@ -151,33 +151,37 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         }
 
         options = input(f"""{Fore.LIGHTWHITE_EX}
-{Fore.LIGHTRED_EX}RED{Fore.LIGHTWHITE_EX}: Needs Login
-Note: Accessing a private account ALWAYS requires login for everything!
+{Fore.LIGHTRED_EX}RED{Fore.LIGHTWHITE_EX}:   Needs Login
+{Fore.LIGHTGREEN_EX}GREEN{Fore.LIGHTWHITE_EX}: Works with private accounts you don't follow
+Note: Most features for Private accounts need a log in and you need to follow them!
 
 T) Set Target
 0) - Login             Needed for private account's you are following to
-1) - addrs           Get all registered addressed by target photos
-2) - captions        Get user's photos captions
-3) - comments        Get total comments of target's posts
-4) - followers       Get target followers
-5) - followings      Get users followed by target
-6) - fwersemail      Get email of target followers
-7) - fwingsemail     Get email of users followed by target
-8) - fwersnumber     Get phone number of target followers
-9) - fwingsnumber    Get phone number of users followed by target
-10) - info            Get target info
-11) - likes           Get total likes of target's posts
-12) - mediatype       Get user's posts type (photo or video)
-13) - photos          Download user's photos in output folder
-14) - propic          Download user's profile picture
-15) - stories         Download user's stories
-16) - album           Download user's album
-17) - igtv            Get user's IGTV
-{Fore.LIGHTRED_EX}18) - hashtag_media   {Fore.LIGHTWHITE_EX}Get all media files from a specific hashtag
-{Fore.LIGHTRED_EX}19) - hashtag_search  {Fore.LIGHTWHITE_EX}Search for hashtags with a search query
+1) - addrs             Get all registered addressed by target photos
+2) - captions          Get user's photos captions
+3) - comments          Get total comments of target's posts
+4) - followers         Get target followers
+5) - followings        Get users followed by target
+6) - fwersemail        Get email of target followers
+7) - fwingsemail       Get email of users followed by target
+8) - fwersnumber       Get phone number of target followers
+9) - fwingsnumber      Get phone number of users followed by target
+{Fore.LIGHTGREEN_EX}10) - info            {Fore.LIGHTWHITE_EX} Get target info
+11) - likes            Get total likes of target's posts
+12) - mediatype        Get user's posts type (photo or video)
+13) - photos           Download user's photos in output folder
+{Fore.LIGHTGREEN_EX}14) - propic          {Fore.LIGHTWHITE_EX} Download user's profile picture
+15) - stories          Download user's stories
+16) - album            Download user's album
+17) - igtv             Get user's IGTV
+{Fore.LIGHTRED_EX}18) - hashtag_media   {Fore.LIGHTWHITE_EX} Get all media files from a specific hashtag
+19) - hashtag_search   Search for hashtags with a search query
 {Fore.LIGHTWHITE_EX}20) - Exit  
 -------------------=>:""")
-        if options != "T" and options != "20" and options != "0" and options != "19" and options != "18" and not self.target:
+
+        if (options != "T" and options != "20" and options != "0" and options != "19" and
+                options != "18" and options != "14" and options != "10" and not self.target):
+
             self.get_target()
 
         elif options == "T":
@@ -185,6 +189,12 @@ T) Set Target
 
         elif options == "20":
             exit()
+
+        elif options == "14":
+            self.download_propic()
+
+        elif options == "10":
+            self.get_info()
 
         method = options_map.get(options, None)
         if method:
@@ -260,11 +270,11 @@ T) Set Target
         self.medias_export = medias
         logger(f"Found {len(medias)} media files{Fore.RESET}")
         data = self.sort_data_types(medias)
-        self.photo_data.append(data[0])
-        self.video_data.append(data[1])
-        self.igtv_data.append(data[2])
-        self.reel_data.append(data[3])
-        self.album_data.append(data[4])
+        self.photo_data = data[0]
+        self.video_data = data[1]
+        self.igtv_data = data[2]
+        self.reel_data = data[3]
+        self.album_data = data[4]
 
     def clear_lists(self):
         self.video_data = []
@@ -430,9 +440,15 @@ Caption: {media.caption_text}"""
                 self.cl.igtv_download(pk, folder=f"{self.username}{os.sep}igtv{os.sep}")
 
     def get_info(self):
+        if not self.target:
+            target = input("Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
+            info = self.cl.user_info_by_username(target)
+            write_data = False
 
-        id = self.get_target_id()
-        info = self.cl.user_info(id)
+        else:
+            id = self.get_target_id()
+            info = self.cl.user_info(id)
+            write_data = True
 
         full_name = info.full_name
         latitude = info.latitude
@@ -486,8 +502,9 @@ Total Media: {media}
 """
         filtered_text = replace_unencodable_with_space(text)
         logger(filtered_text)
-        with open(f"{self.username}{os.sep}user_info{os.sep}user_info.txt", "w") as user_info:
-            user_info.write(filtered_text)
+        if write_data:
+            with open(f"{self.username}{os.sep}user_info{os.sep}user_info.txt", "w") as user_info:
+                user_info.write(filtered_text)
 
     def sort_data_types(self, data_packet):
 
@@ -515,8 +532,6 @@ Total Media: {media}
                 album_data.append(item)
 
         return [photo_data, video_data, igtv_data, reel_data, album_data]
-
-
 
     def get_likes(self):
         likes = 0
@@ -551,10 +566,22 @@ Album:  {album}""")
             self.cl.photo_download(pk, folder=f"{self.username}{os.sep}photos{os.sep}")
 
     def download_propic(self):
-        user_id = self.get_target_id()
-        user_info = self.cl.user_info_v1(user_id)
+        if not self.target:
+            target = input("Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
+
+        else:
+            target = self.target
+
+        user_id = self.cl.user_id_from_username(target)
+        user_info = self.cl.user_info(user_id)
         picture = user_info.profile_pic_url_hd
-        wget.download(picture, out=f"{self.username}{os.sep}profile_pic{os.sep}")
+        if self.username is None:
+            username = target
+            wget.download(picture)
+
+        else:
+            wget.download(picture, out=f"{self.username}{os.sep}profile_pic{os.sep}")
+
         logger(f"Downloaded profile picture!")
 
     def download_stories(self):

@@ -8,7 +8,7 @@ colours = [Fore.LIGHTCYAN_EX, Fore.LIGHTGREEN_EX, Fore.LIGHTWHITE_EX, Fore.LIGHT
 def logger(msg, level=0):
 
     if level == 0:
-        print(f"{Fore.LIGHTGREEN_EX}[+] {random.choice(colours)}{msg}")
+        print(f"{Fore.LIGHTGREEN_EX}[+]{random.choice(colours)}{msg}")
 
     elif level == 1:
-        print(f"{Fore.LIGHTRED_EX}[~] {Fore.LIGHTWHITE_EX}{msg}")
+        print(f"{Fore.LIGHTRED_EX}[~]{Fore.LIGHTWHITE_EX}{msg}")

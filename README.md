@@ -33,14 +33,14 @@ INSTAGRAM PROHOBITS USING AUTOMATED TOOLS
 **except hashtags, tagged, commented, wcommented
 # Installation
 
-### Current version: 1.0
-### >Download from [Releases](https://github.com/EchterAlsFake/Osintgram2/releases)
+### Current version: 1.1
+### Download from [Releases](https://github.com/EchterAlsFake/Osintgram2/releases)
 
 # Building from Source
 ### Supported distros:
 
 - Termux (Android)  ! NO root access required
-- Kali Linux
+- Kali Linux / Nethunter
 - Ubuntu
 - Parrot OS
 - Arch Linux

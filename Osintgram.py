@@ -14,13 +14,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-import contextlib
-import instagrapi.exceptions
-import wget
 import os
-import json
+try:
+    from instagrapi import Client
+except Exception as e:
+    with open("/storage/emulated/0/Osintgram_log.txt", "w") as f:
+        f.close()
 
-from instagrapi import Client
+    with open("/storage/emulated/0/Osintgram_log.txt", "w") as f:
+        f.write(str(e))
+
+
 root_path = "/storage/emulated/0"
 
 __version__ = "1.1_android_debug"
@@ -176,7 +180,6 @@ class MainApp(MDApp):
         self.igtv_data = data[2]
         self.reel_data = data[3]
         self.album_data = data[4]
-
 
 
 

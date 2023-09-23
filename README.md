@@ -67,7 +67,7 @@ ChatGPT automatically generated the build script.
 
 #### API: [instagrapi](https://github.com/subzeroid/instagrapi)
 #### Idea: [Original Osintgram](https://github.com/datalux/Osintgram)
-
+#### GUI : [Qt](https://qt.io)
 # License
 
 Licensed under the GPLv3 License.

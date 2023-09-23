@@ -218,48 +218,6 @@ T) Set Target
             logger(f"{Fore.LIGHTMAGENTA_EX}User is a private account. Log in to your account and follow him / her")
             self.get_target()
 
-    def login(self, password_login=False):
-        if not os.path.isfile("session.json") or password_login:
-
-            if os.path.exists("session.json"):
-                os.remove("session.json")
-
-            logger("There is no session.json file. Logging in with username and password...")
-            self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter username --=>:")
-            self.password = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter password --=>:")
-
-            try:
-                self.cl.login(self.username, self.password)
-                self.logged_in = True
-                logger(f"{Fore.LIGHTGREEN_EX}Login successful!")
-                session_id = self.cl.sessionid
-                session_data = {
-                    "session_id": session_id}
-
-                with open("session.json", "w") as file:
-                    json.dump(session_data, file)
-
-                logger("Saved Session ID")
-
-            except instagrapi.exceptions.BadPassword or instagrapi.exceptions.BadCredentials:
-                logger(f"{Fore.LIGHTWHITE_EX}Wrong credentials. Please try again.", level=1)
-                self.login(password_login=True)
-
-        else:
-            with open("session.json", "r") as file:
-                session_data = json.load(file)
-
-            session_id_value = session_data["session_id"]
-            logger(f"{Fore.LIGHTGREEN_EX}Found Session ID: {session_id_value}:")
-
-            try:
-                self.cl.login_by_sessionid(session_id_value)
-                self.logged_in = True
-                logger(f"{Fore.LIGHTGREEN_EX}Login successful!  Session ID: {self.cl.sessionid}")
-
-            except instagrapi.exceptions:
-                logger("Session ID is out of date. Recreating new session ID...", level=1)
-                self.login(password_login=True)
 
     def get_target_id(self):
         return self.cl.user_id_from_username(self.username)

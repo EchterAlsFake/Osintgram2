@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Osintgram</class>
+ <widget class="QWidget" name="Osintgram">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1049</width>
+    <height>371</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Osintgram 1.2 by EchterAlsFake</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">color: white;
+background-color: rgb(56, 56, 56)</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_6">
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Login (for Private accounts)</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Password: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_password">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Username: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_username">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="button_login">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+        background-color: #5a2a82; /* base violet color */
+        color: #ffffff; /* white text */
+        border: none;
+        border-radius: 10px; /* reduced rounded corner radius */
+        padding: 5px 10px; /* reduced button padding */
+        font-size: 12px;
+        outline: none;
+    }
+    
+    QPushButton:hover {
+        background-color: #7b3ca3; /* slightly lighter violet when hovered */
+    }
+
+    QPushButton:pressed {
+        background-color: #481f61; /* darker violet when pressed */
+    }
+
+    QPushButton:disabled {
+        background-color: #3f1d4d; /* even darker shade when button is disabled */
+        color: #8a7b9a; /* greyish text */
+    }</string>
+        </property>
+        <property name="text">
+         <string>Login</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>User Input</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Hashtag: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_hashtag">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Target:    </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_target">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Target Media section: </string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="0">
+       <widget class="QPushButton" name="button_igtv">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+        background-color: #5a2a82; /* base violet color */
+        color: #ffffff; /* white text */
+        border: none;
+        border-radius: 10px; /* reduced rounded corner radius */
+        padding: 5px 10px; /* reduced button padding */
+        font-size: 12px;
+        outline: none;
+    }
+    
+    QPushButton:hover {
+        background-color: #7b3ca3; /* slightly lighter violet when hovered */
+    }
+
+    QPushButton:pressed {
+        background-color: #481f61; /* darker violet when pressed */
+    }
+
+    QPushButton:disabled {
+        background-color: #3f1d4d; /* even darker shade when button is disabled */
+        color: #8a7b9a; /* greyish text */
+    }</string>
+        </property>
+        <property name="text">
+         <string>Get IGTV</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="button_photos">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+        background-color: #5a2a82; /* base violet color */
+        color: #ffffff; /* white text */
+        border: none;
+        border-radius: 10px; /* reduced rounded corner radius */
+        padding: 5px 10px; /* reduced button padding */
+        font-size: 12px;
+        outline: none;
+    }
+    
+    QPushButton:hover {
+        background-color: #7b3ca3; /* slightly lighter violet when hovered */
+    }
+
+    QPushButton:pressed {
+        background-color: #481f61; /* darker violet when pressed */
+    }
+
+    QPushButton:disabled {
+        background-color: #3f1d4d; /* even darker shade when button is disabled */
+        color: #8a7b9a; /* greyish text */
+    }</string>
+        </property>
+        <property name="text">
+         <string>Get photos</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="button_album">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+        background-color: #5a2a82; /* base violet color */
+        color: #ffffff; /* white text */
+        border: none;
+        border-radius: 10px; /* reduced rounded corner radius */
+        padding: 5px 10px; /* reduced button padding */
+        font-size: 12px;
+        outline: none;
+    }
+    
+    QPushButton:hover {
+        background-color: #7b3ca3; /* slightly lighter violet when hovered */
+    }
+
+    QPushButton:pressed {
+        background-color: #481f61; /* darker violet when pressed */
+    }
+
+    QPushButton:disabled {
+        background-color: #3f1d4d; /* even darker shade when button is disabled */
+        color: #8a7b9a; /* greyish text */
+    }</string>
+        </property>
+        <property name="text">
+         <string>Get Albums</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="button_stories">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+        background-color: #5a2a82; /* base violet color */
+        color: #ffffff; /* white text */
+        border: none;
+        border-radius: 10px; /* reduced rounded corner radius */
+        padding: 5px 10px; /* reduced button padding */
+        font-size: 12px;
+        outline: none;
+    }
+    
+    QPushButton:hover {
+        background-color: #7b3ca3; /* slightly lighter violet when hovered */
+    }
+
+    QPushButton:pressed {
+        background-color: #481f61; /* darker violet when pressed */
+    }
+
+    QPushButton:disabled {
+        background-color: #3f1d4d; /* even darker shade when button is disabled */
+        color: #8a7b9a; /* greyish text */
+    }</string>
+        </property>
+        <property name="text">
+         <string>Get stories</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>Status reports:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="3" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Target's total albums: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_album">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Current message: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_current_message">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Target's total IGTV: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_igtv">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Target's total media: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_media">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Target's total stories: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_total_stories">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Target's total photos: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineedit_total_photos">
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 0 8px;
+    background: rgb(94, 92, 100);  /* setzt den Hintergrund auf Schwarz */
+    color: #FFFFFF;  /* setzt die Textfarbe auf Weiß */
+    font-size: 16px;
+    height: 20px;
+}
+
+QLineEdit:focus {
+    border-color: rgb(107, 0, 255)
+}
+
+QLineEdit:disabled {
+    background: #444444;  /* setzt den Hintergrund auf ein dunkles Grau, wenn das QLineEdit deaktiviert ist */
+    color: #aaaaaa;  /* setzt die Textfarbe auf ein helles Grau, wenn das QLineEdit deaktiviert ist */
+    border-color: #aaaaaa;
+}</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="title">
+      <string>Progressbar:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QProgressBar" name="progressBar">
+        <property name="styleSheet">
+         <string notr="true">QProgressBar {
+    background-color: #F0F0F0; /* Hellgrauer Hintergrund */
+	text-align: center;
+	color: rgb(230, 97, 0);
+	border: color grey;
+	border-width: 6;
+	border-radius: 12px;
+	color: black;
+	
+}
+
+QProgressBar::chunk {
+    background-color: rgb(26, 95, 180); /* Grün als Vordergrundfarbe */
+	border-radius: 12px;
+}
+</string>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

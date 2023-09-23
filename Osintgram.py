@@ -165,9 +165,6 @@ class MainApp(MDApp):
             self.cl.photo_download(media_pk=photo.pk, folder=f"{root_path}{os.sep}photos{os.sep}")
             progress_bar.value = counter  # Update progress bar value based on your logic
 
-
-
-
     def get_target_id(self):
         target = self.root.ids.target_input.text
         create_workspace(target)

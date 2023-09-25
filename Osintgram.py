@@ -631,4 +631,24 @@ Media Count: {hashtag.media_count}
 
 
 if __name__ == "__main__":
-    Osintgram()
+    try:
+        Osintgram()
+
+    except instagrapi.exceptions.PrivateAccount:
+        logger("You are trying to access a private account. Please login and follow that person!")
+
+    except instagrapi.exceptions.PleaseWaitFewMinutes:
+        logger("Please wait a few minutes, change IP, or Login and try again! This is a restriction from Instagram.")
+
+    except instagrapi.exceptions.ChallengeRequired:
+        logger("Instagram wants you to solve a challenge. Please go to https://instagram.com, solve it and try again")
+
+    except instagrapi.exceptions.UserNotFound:
+        logger("The User was not found.  Maybe a typo?")
+
+    except instagrapi.exceptions.LoginRequired:
+        logger("You must login!  (requested by Instagram)")
+
+    except instagrapi.exceptions.HashtagNotFound:
+        logger("The hashtag was not found. Maybe a typo?")
+

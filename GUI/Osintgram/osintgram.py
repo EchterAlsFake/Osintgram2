@@ -51,6 +51,7 @@ class Osintgram(QWidget):
         self.followings = None
         self.stories = []
         self.medias_export = None
+        self.logged_in = False
         self.target = False
         self.medias_requested = False
         self.cl = Client()
@@ -61,9 +62,14 @@ class Osintgram(QWidget):
         self.ui.button_login.clicked.connect(self.login)
         self.ui.button_photos.clicked.connect(self.download_photos)
 
+    def status(self, text):
+        self.ui.lineedit_current_message.setText(text)
+
+
     def login(self, password_login=False):
         username = self.ui.lineedit_username.text()
         password = self.ui.lineedit_password.text()
+        self.status("Trying login")
 
         if not os.path.isfile("session.json") or password_login:
 
@@ -72,6 +78,7 @@ class Osintgram(QWidget):
 
             try:
                 self.cl.login(username, password)
+                self.status("Logged in")
                 self.logged_in = True
                 ui_popup(f"Login successful!")
                 session_id = self.cl.sessionid
@@ -92,6 +99,7 @@ class Osintgram(QWidget):
             session_id_value = session_data["session_id"]
             try:
                 self.cl.login_by_sessionid(session_id_value)
+                self.status("Logged in")
                 self.logged_in = True
                 ui_popup(f"Login successful!  Session ID: {self.cl.sessionid}")
 

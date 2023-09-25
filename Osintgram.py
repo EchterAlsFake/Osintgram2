@@ -203,6 +203,40 @@ T) Set Target
             else:
                 getattr(self, method)()
 
+    def login(self, password_login=False):
+        username = input("Username: ")
+        password = input("Password: ")
+
+        if not os.path.isfile("session.json") or password_login:
+
+            if os.path.exists("session.json"):
+                os.remove("session.json")
+
+            try:
+                self.cl.login(username, password)
+                self.logged_in = True
+                session_id = self.cl.sessionid
+                session_data = {
+                    "session_id": session_id}
+
+                with open("session.json", "w") as file:
+                    json.dump(session_data, file)
+
+            except instagrapi.exceptions.BadPassword or instagrapi.exceptions.BadCredentials:
+                self.login(password_login=True)
+
+        else:
+            with open("session.json", "r") as file:
+                session_data = json.load(file)
+
+            session_id_value = session_data["session_id"]
+            try:
+                self.cl.login_by_sessionid(session_id_value)
+                self.logged_in = True
+
+            except instagrapi.exceptions:
+                self.login(password_login=True)
+
     def get_target(self):
         try:
             self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")

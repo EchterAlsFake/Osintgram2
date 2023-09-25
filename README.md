@@ -2,6 +2,13 @@
 
 ##### A *OSINT* Tool for anonymous advanced information gathering
 ##### Based on the great [Osintgram](https://github.com/Datalux/Osintgram) from Datalux
+# Information:
+
+This project is currently not at my highest priority.
+<br>Some features may not work correctly and there might be some logical flaws.
+
+I can fix it in approximately 1-2 weeks :) 
+<br>Thanks for your patience
 
 # Table of contents
 

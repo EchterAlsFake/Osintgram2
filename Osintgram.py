@@ -19,14 +19,19 @@ import instagrapi.exceptions
 import wget
 import os
 import json
+import argparse
 
 from logger import logger
 from instagrapi import Client
 from colorama import *
 from tqdm import tqdm
+from hue_shift import return_color, reset
 
 __version__ = "1.1"
 __author__ = "Johannes Habel | EchterAlsFake"
+__license__ = "GPL v3"
+__source__ = "https://github.com/EchterAlsFake/Osintgram2"
+
 
 
 def replace_unencodable_with_space(s, encoding='utf-8'):
@@ -54,7 +59,8 @@ def create_workspace(target_name, hashtag_name=False):
             os.mkdir(f"{target_name}{os.sep}{folder}")
 
 
-input("""
+def proceed():
+    input("""
 Licensed Under GNU General Public License v3 (GPLv3)
 
 Disclaimer:
@@ -153,31 +159,31 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         options = input(f"""{Fore.LIGHTWHITE_EX}
 {Fore.LIGHTRED_EX}RED{Fore.LIGHTWHITE_EX}:   Needs Login
 {Fore.LIGHTGREEN_EX}GREEN{Fore.LIGHTWHITE_EX}: Works with private accounts you don't follow
-Note: Most features for Private accounts need a log in and you need to follow them!
+{return_color()}Note: Most features for Private accounts need a log in and you need to follow them!{reset()}
 
-T) Set Target
-0) - Login             Needed for private account's you are following to
-1) - addrs             Get all registered addressed by target photos
-2) - captions          Get user's photos captions
-3) - comments          Get total comments of target's posts
-4) - followers         Get target followers
-5) - followings        Get users followed by target
-6) - fwersemail        Get email of target followers
-7) - fwingsemail       Get email of users followed by target
-8) - fwersnumber       Get phone number of target followers
-9) - fwingsnumber      Get phone number of users followed by target
-{Fore.LIGHTGREEN_EX}10) - info            {Fore.LIGHTWHITE_EX} Get target info
-11) - likes            Get total likes of target's posts
-12) - mediatype        Get user's posts type (photo or video)
-13) - photos           Download user's photos in output folder
-{Fore.LIGHTGREEN_EX}14) - propic          {Fore.LIGHTWHITE_EX} Download user's profile picture
-15) - stories          Download user's stories
-16) - album            Download user's album
-17) - igtv             Get user's IGTV
-{Fore.LIGHTRED_EX}18) - hashtag_media   {Fore.LIGHTWHITE_EX} Get all media files from a specific hashtag
-19) - hashtag_search   Search for hashtags with a search query
-{Fore.LIGHTWHITE_EX}20) - Exit  
--------------------=>:""")
+{return_color()}T) Set Target{reset()}
+0) - {return_color()}Login{reset()}             Needed for private account's you are following to
+1) - {return_color()}addrs{reset()}             Get all registered addressed by target photos
+2) - {return_color()}captions{reset()}          Get user's photos captions
+3) - {return_color()}comments{reset()}          Get total comments of target's posts
+4) - {return_color()}followers{reset()}         Get target followers
+5) - {return_color()}followings{reset()}        Get users followed by target
+6) - {return_color()}fwersemail{reset()}        Get email of target followers
+7) - {return_color()}fwingsemail{reset()}       Get email of users followed by target
+8) - {return_color()}fwersnumber{reset()}       Get phone number of target followers
+9) - {return_color()}fwingsnumber{reset()}      Get phone number of users followed by target
+{Fore.LIGHTGREEN_EX}10) - info{reset()}             Get target info
+11) - {return_color()}likes{reset()}            Get total likes of target's posts
+12) - {return_color()}mediatype{reset()}        Get user's posts type (photo or video)
+13) - {return_color()}photos{reset()}           Download user's photos in output folder
+{Fore.LIGHTGREEN_EX}14) - propic{reset()}           Download user's profile picture
+15) - {return_color()}stories{reset()}          Download user's stories
+16) - {return_color()}album{reset()}            Download user's album
+17) - {return_color()}igtv{reset()}             Get user's IGTV
+{Fore.LIGHTRED_EX}18) - hashtag_media{reset()}    Get all media files from a specific hashtag
+19) - {return_color()}hashtag_search{reset()}   Search for hashtags with a search query
+{Fore.LIGHTWHITE_EX}20) - Exit{reset()}  
+{return_color()}-------------------=>:{reset()}""")
 
         if (options != "T" and options != "20" and options != "0" and options != "19" and
                 options != "18" and options != "14" and options != "10" and not self.target):
@@ -203,21 +209,57 @@ T) Set Target
             else:
                 getattr(self, method)()
 
+    def login(self, password_login=False):
+        username = input(f"{return_color()}Username: {reset()}")
+        password = input(f"{return_color()}Password: {reset()}")
+
+        if not os.path.isfile("session.json") or password_login:
+
+            if os.path.exists("session.json"):
+                os.remove("session.json")
+
+            try:
+                self.cl.login(username, password)
+                self.logged_in = True
+                logger(f"{return_color()}Login Successful!{reset()}")
+                session_id = self.cl.sessionid
+                session_data = {
+                    "session_id": session_id}
+
+                with open("session.json", "w") as file:
+                    json.dump(session_data, file)
+
+            except instagrapi.exceptions.BadPassword or instagrapi.exceptions.BadCredentials:
+                self.login(password_login=True)
+
+        else:
+            with open("session.json", "r") as file:
+                session_data = json.load(file)
+
+            session_id_value = session_data["session_id"]
+            try:
+                self.cl.login_by_sessionid(session_id_value)
+                self.logged_in = True
+                logger(f"{return_color()}Login Successful!{reset()}")
+
+            except instagrapi.exceptions:
+                self.login(password_login=True)
+
     def get_target(self):
         try:
-            self.username = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter target --=>:")
+            self.username = input(f"{self.z}{return_color()}Enter target --=>:{reset()}")
             self.clear_lists()
             target_id = self.get_target_id()
             info = self.cl.user_info(target_id)
-            logger(f"{Fore.LIGHTCYAN_EX}Target: {info.full_name}")
+            logger(f"{return_color()}Target: {reset()}{info.full_name}")
             self.target = self.username
             self.get_media_raw()
             create_workspace(self.username)
 
         except instagrapi.exceptions.PrivateAccount or instagrapi.exceptions.PrivateError:
-            logger(f"{Fore.LIGHTMAGENTA_EX}User is a private account. Log in to your account and follow him / her")
+            logger(f"{Fore.LIGHTMAGENTA_EX}User is a private account. Log in to your account and follow him / her",
+                   level=1)
             self.get_target()
-
 
     def get_target_id(self):
         return self.cl.user_id_from_username(self.username)
@@ -259,7 +301,7 @@ T) Set Target
                     location_file.write(f"{data}\n")
 
             if len(latitudes) and len(longitudes) == 0:
-                logger(f"{Fore.LIGHTYELLOW_EX} No location data found. Sorry.")
+                logger(f"{return_color()} No location data found. Sorry.")
 
     def download_album(self):
         for item in tqdm(self.album_data):
@@ -282,7 +324,7 @@ Caption: {media.caption_text}"""
                     print(data)
                     caption_file.write(f"{data}\n")
 
-        input(f"{Fore.LIGHTYELLOW_EX}Press ENTER to continue...")
+        input(f"{return_color()}Press ENTER to continue...")
 
     def get_comments(self):
         data = self.photo_data + self.igtv_data + self.reel_data + self.video_data + self.album_data
@@ -298,30 +340,30 @@ Caption: {media.caption_text}"""
                     likes = comment.like_count
                     user = comment.user.username
                     data = (f"""
-    User: {user}
-    Commented at: {created}
-    Likes: {likes}
-    Text: {text}""")
+{return_color()}User: {user}
+{return_color()}Commented at: {created}
+{return_color()}Likes: {likes}
+{return_color()}Text: {text}""")
                     logger(data)
                     comments_file.write(f"{data}\n")
 
     def get_followers(self):
         user_id = self.get_target_id()
-        amount = input(f"{Fore.LIGHTYELLOW_EX}Enter amount of followings you want to get  (0 for all) --=>:")
+        amount = input(f"{return_color()}Enter amount of followings you want to get  (0 for all) --=>:")
         followings = self.cl.user_followers_v1(user_id, amount=int(amount))
         for counter, follower in enumerate(followings):
             logger(f"{counter}) Username: {follower.username}")
 
     def get_followings(self):
         user_id = self.get_target_id()
-        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter amount of followings you want to get  (0 for all) --=>:")
+        amount = input(f"{self.z}{return_color()}Enter amount of followings you want to get  (0 for all) --=>:")
         followings = self.cl.user_following_v1(user_id, amount=int(amount))
         for counter, follower in enumerate(followings):
             logger(f"{counter}) Username: {follower.username}")
 
     def get_email(self, mode):
         amount = input(
-            f"{self.z}{Fore.LIGHTYELLOW_EX}For how much followers / following you want to get emails for (0 for all)--=>:")
+            f"{self.z}{return_color()}For how much followers / following you want to get emails for (0 for all)--=>:")
         user_id = self.get_target_id()
         if mode == "6":
             followers = self.cl.user_followers(user_id, amount=int(amount))
@@ -335,7 +377,7 @@ Caption: {media.caption_text}"""
 
         for follower in tqdm(followers):
             user_names.append(follower.username)
-            logger(f"{Fore.LIGHTMAGENTA_EX} Appended: {follower.username}")
+            logger(f"{return_color()} Appended: {follower.username}")
 
         for username in tqdm(user_names):
             try:
@@ -384,7 +426,7 @@ Caption: {media.caption_text}"""
 
         with open(f"{self.username}{os.sep}followers_number{os.sep}numbers.txt", "w") as followers_number_file:
             for counter, user in enumerate(valid_users):
-                data = f"{Fore.LIGHTCYAN_EX}{counter}) Found Number {numbers[counter]} with Code: {codes[counter]} for User: {user}"
+                data = f"{return_color()}{counter}) Found Number {numbers[counter]} with Code: {codes[counter]} for User: {user}"
                 logger(data)
                 followers_number_file.write(f"{data}\n")
 
@@ -399,7 +441,7 @@ Caption: {media.caption_text}"""
 
     def get_info(self):
         if not self.target:
-            target = input("Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
+            target = input(f"{return_color()}Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
             info = self.cl.user_info_by_username(target)
             write_data = False
 
@@ -435,28 +477,28 @@ Caption: {media.caption_text}"""
 If something has 'None' as answer, it means, that there's no information about it.
 ----------------------------------------------------------------------------------
 
-Full Name: {full_name}
-Biography: {biography}
-Follower Count: {follower_count}
-Following Count: {following_count}
-Latitude: {latitude}
-Longitude: {longitude}
-Contact Phone: {contact_phone}
-Business contact method: {business_contact_method}
-Business category name: {business_category_name}
-Public Phone Number: {public_phone_number}
-Public Phone country code: {public_country_code}
-Public E-Mail: {public_email}
-Category: {category}
-Account type: {account_type}
-Address street: {address_steet}
-City ID: {city_id}
-City Name: {city_name}
-External URL: {external_url}
-Profile Picture: {profile_pic}
-PK: {pk}
-ZIP: {zip}
-Total Media: {media}
+{return_color()}Full Name: {full_name}
+{return_color()}Biography: {biography}
+{return_color()}Follower Count: {follower_count}
+{return_color()}Following Count: {following_count}
+{return_color()}Latitude: {latitude}
+{return_color()}Longitude: {longitude}
+{return_color()}Contact Phone: {contact_phone}
+{return_color()}Business contact method: {business_contact_method}
+{return_color()}Business category name: {business_category_name}
+{return_color()}Public Phone Number: {public_phone_number}
+{return_color()}Public Phone country code: {public_country_code}
+{return_color()}Public E-Mail: {public_email}
+{return_color()}Category: {category}
+{return_color()}Account type: {account_type}
+{return_color()}Address street: {address_steet}
+{return_color()}City ID: {city_id}
+{return_color()}City Name: {city_name}
+{return_color()}External URL: {external_url}
+{return_color()}Profile Picture: {profile_pic}
+{return_color()}PK: {pk}
+{return_color()}ZIP: {zip}
+{return_color()}Total Media: {media}
 """
         filtered_text = replace_unencodable_with_space(text)
         logger(filtered_text)
@@ -512,11 +554,11 @@ Total Media: {media}
 
         logger(f"""
     
-Photos: {photos}
-Reels:  {reels}
-IGTV:   {igtv}
-Video:  {video}
-Album:  {album}""")
+{return_color()}Photos: {photos}
+{return_color()}Reels:  {reels}
+{return_color()}IGTV:   {igtv}
+{return_color()}Video:  {video}
+{return_color()}Album:  {album}""")
 
     def download_photos(self):
         for photo in tqdm(self.photo_data):
@@ -525,7 +567,7 @@ Album:  {album}""")
 
     def download_propic(self):
         if not self.target:
-            target = input("Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
+            target = input(f"{return_color()}Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
 
         else:
             target = self.target
@@ -544,7 +586,7 @@ Album:  {album}""")
 
     def download_stories(self):
         amount = input(
-            f"{self.z}{Fore.LIGHTYELLOW_EX}Enter the amount of stories you want to download (0 for all) --=>:")
+            f"{self.z}{return_color()}Enter the amount of stories you want to download (0 for all) --=>:")
         stories = self.cl.user_stories(user_id=self.get_target_id(), amount=int(amount))
 
         for story in stories:
@@ -556,18 +598,18 @@ Album:  {album}""")
         logger(f"Downloaded {len(stories)} stories")
 
     def get_hashtags_media(self):
-        hashtag = input(f"{self.z}{Fore.LIGHTCYAN_EX}Enter the hashtag without # -->:")
+        hashtag = input(f"{self.z}{return_color()}Enter the hashtag without # -->:")
         mode = input(f"""
-Pick the sorting:
+{return_color()}Pick the sorting:
 
-clips)   Clips hashtag medias
-recent)  Recent hashtag medias
-top)     Top hashtag medias
-------------------=>:""")
+{return_color()}clips)   Clips hashtag medias
+{return_color()}recent)  Recent hashtag medias
+{return_color()}top)     Top hashtag medias
+{return_color()}------------------=>:""")
 
-        amount = input(f"{self.z}{Fore.LIGHTYELLOW_EX}Enter the amount (0 for all) -->:")
+        amount = input(f"{self.z}{return_color()}Enter the amount (0 for all) -->:")
         hashtag_object = self.cl.hashtag_medias_v1(name=str(hashtag), tab_key=str(mode), amount=int(amount))
-        print("Done")
+        logger(f"{return_color()}Done")
         data = self.sort_data_types(hashtag_object)
         photo_data = data[0]
         video_data = data[1]
@@ -576,14 +618,14 @@ top)     Top hashtag medias
         album_data = data[4]
 
         select_downloads = input(f"""
-Select the type of media you want to download:
+{return_color()}Select the type of media you want to download:
 
-1) Photos : {len(photo_data)}
-2) Videos : {len(video_data)}
-3) IGTV   : {len(album_data)}
-4) Reels  : {len(reel_data)}
-5) Albums : {len(album_data)}
------------------(separate with comma e.g 1,2,3) --=>:""")
+{return_color()}1) Photos : {len(photo_data)}
+{return_color()}2) Videos : {len(video_data)}
+{return_color()}3) IGTV   : {len(album_data)}
+{return_color()}4) Reels  : {len(reel_data)}
+{return_color()}5) Albums : {len(album_data)}
+{return_color()}-----------------(separate with comma e.g 1,2,3) --=>:""")
 
         folders = ["photos", "videos", "igtv", "reels", "albums"]
 
@@ -617,31 +659,34 @@ Select the type of media you want to download:
                     self.cl.album_download(media_pk=album.pk, folder=f"{hashtag}{os.sep}albums{os.sep}")
 
 
-        logger("All done :)")
+        logger(f"{return_color()}All done :)")
 
     def search_hashtags(self):
-        query = input(f"{self.z}{Fore.LIGHTMAGENTA_EX}Enter search query --=>:")
+        query = input(f"{self.z}{return_color()}Enter search query --=>:")
         hashtags = self.cl.search_hashtags(query)
         for hashtag in hashtags:
             print(f"""
-ID: {hashtag.id}
-Name: {hashtag.name}
-Media Count: {hashtag.media_count}
-----------------------------------""")
+{return_color()}ID: {hashtag.id}
+{return_color()}Name: {hashtag.name}
+{return_color()}Media Count: {hashtag.media_count}
+{return_color()}----------------------------------""")
 
 
-if __name__ == "__main__":
+def execute():
     try:
+        proceed()
         Osintgram()
 
     except instagrapi.exceptions.PrivateAccount:
         logger("You are trying to access a private account. Please login and follow that person!")
 
     except instagrapi.exceptions.PleaseWaitFewMinutes:
-        logger("Please wait a few minutes, change IP, or Login and try again! This is a restriction from Instagram.")
+        logger(
+            "Please wait a few minutes, change IP, or Login and try again! This is a restriction from Instagram.")
 
     except instagrapi.exceptions.ChallengeRequired:
-        logger("Instagram wants you to solve a challenge. Please go to https://instagram.com, solve it and try again")
+        logger(
+            "Instagram wants you to solve a challenge. Please go to https://instagram.com, solve it and try again")
 
     except instagrapi.exceptions.UserNotFound:
         logger("The User was not found.  Maybe a typo?")
@@ -651,4 +696,41 @@ if __name__ == "__main__":
 
     except instagrapi.exceptions.HashtagNotFound:
         logger("The hashtag was not found. Maybe a typo?")
+
+def help():
+    print("""
+-h | --help    : Displays this help message
+-c | --no-color: Disabled the random colors
+-v | --version : Shows the current version
+-s | --source  : Shows the source of this project
+-l | --license : Shows the license""")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--no-color", help="Disables terminal colors", action="store_true")
+    parser.add_argument("-v", "--version", help="Shows version information", action="store_true")
+    parser.add_argument("-s", "--source", help="Shows the Source of this project", action="store_true")
+    parser.add_argument("-l", "--license", help="Shows License information", action="store_true")
+    args = parser.parse_args()
+
+    if args.no_color:
+        def return_color():
+            return Fore.LIGHTWHITE_EX
+
+        execute()
+
+    elif args.version:
+        print(__version__)
+
+    elif args.source:
+        print(__source__)
+
+    elif args.license:
+        print(__license__)
+
+    else:
+        execute()
+
+
 

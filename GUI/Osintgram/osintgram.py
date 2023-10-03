@@ -7,6 +7,7 @@ from instagrapi import exceptions
 from PySide6.QtWidgets import QApplication, QWidget, QMessageBox
 from ui_form import Ui_Osintgram
 
+
 def replace_unencodable_with_space(s, encoding='utf-8'):
     result = []
     for c in s:
@@ -60,6 +61,8 @@ class Osintgram(QWidget):
     def buttons_pressed(self):
         self.ui.button_login.clicked.connect(self.login)
         self.ui.button_photos.clicked.connect(self.download_photos)
+        self.ui.button_igtv.clicked.connect(self.get_igtv)
+        self.ui.button_get_likes.clicked.connect(self.get_likes)
 
     def login(self, password_login=False):
         username = self.ui.lineedit_username.text()
@@ -162,8 +165,27 @@ class Osintgram(QWidget):
             self.ui.progressBar.setValue(counter)
 
 
+    def get_igtv(self):
+        if len(self.igtv_data) == 0 or self.igtv_data is None:
+            ui_popup("User has not IGTV data")
 
+        else:
+            self.ui.progressBar.setMaximum(len(self.igtv_data))
+            for counter, item in enumerate(self.igtv_data):
+                pk = item.pk
+                self.cl.igtv_download(pk, folder=f"{self.username}{os.sep}igtv{os.sep}")
+                self.ui.progressBar.setValue(counter)
 
+    def get_likes(self):
+        likes = 0
+
+        x = self.cl.user_medias_v1(user_id=self.get_user_id())
+        for item in x:
+            like_count = item.like_count
+            like_count = int(like_count)
+            likes += like_count
+
+        ui_popup(f"Total Likes: {likes}")
 
 
 

@@ -3,3 +3,4 @@ wget
 colorama
 pillow
 tqdm
+hue_shift

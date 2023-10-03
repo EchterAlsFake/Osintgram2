@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1049</width>
-    <height>371</height>
+    <height>390</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -251,8 +251,8 @@ QLineEdit:disabled {
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="button_photos">
+      <item row="2" column="0">
+       <widget class="QPushButton" name="button_stories">
         <property name="styleSheet">
          <string notr="true">QPushButton {
         background-color: #5a2a82; /* base violet color */
@@ -278,7 +278,7 @@ QLineEdit:disabled {
     }</string>
         </property>
         <property name="text">
-         <string>Get photos</string>
+         <string>Get stories</string>
         </property>
        </widget>
       </item>
@@ -313,8 +313,8 @@ QLineEdit:disabled {
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="button_stories">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="button_photos">
         <property name="styleSheet">
          <string notr="true">QPushButton {
         background-color: #5a2a82; /* base violet color */
@@ -340,7 +340,38 @@ QLineEdit:disabled {
     }</string>
         </property>
         <property name="text">
-         <string>Get stories</string>
+         <string>Get photos</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QPushButton" name="button_get_likes">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+        background-color: #5a2a82; /* base violet color */
+        color: #ffffff; /* white text */
+        border: none;
+        border-radius: 10px; /* reduced rounded corner radius */
+        padding: 5px 10px; /* reduced button padding */
+        font-size: 12px;
+        outline: none;
+    }
+    
+    QPushButton:hover {
+        background-color: #7b3ca3; /* slightly lighter violet when hovered */
+    }
+
+    QPushButton:pressed {
+        background-color: #481f61; /* darker violet when pressed */
+    }
+
+    QPushButton:disabled {
+        background-color: #3f1d4d; /* even darker shade when button is disabled */
+        color: #8a7b9a; /* greyish text */
+    }</string>
+        </property>
+        <property name="text">
+         <string>Get Likes</string>
         </property>
        </widget>
       </item>

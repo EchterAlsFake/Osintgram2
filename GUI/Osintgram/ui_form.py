@@ -23,7 +23,7 @@ class Ui_Osintgram(object):
     def setupUi(self, Osintgram):
         if not Osintgram.objectName():
             Osintgram.setObjectName(u"Osintgram")
-        Osintgram.resize(1049, 371)
+        Osintgram.resize(1049, 390)
         Osintgram.setStyleSheet(u"color: white;\n"
 "background-color: rgb(56, 56, 56)")
         self.gridLayout_6 = QGridLayout(Osintgram)
@@ -236,9 +236,9 @@ class Ui_Osintgram(object):
 
         self.gridLayout_3.addWidget(self.button_igtv, 1, 0, 1, 1)
 
-        self.button_photos = QPushButton(self.groupBox_2)
-        self.button_photos.setObjectName(u"button_photos")
-        self.button_photos.setStyleSheet(u"QPushButton {\n"
+        self.button_stories = QPushButton(self.groupBox_2)
+        self.button_stories.setObjectName(u"button_stories")
+        self.button_stories.setStyleSheet(u"QPushButton {\n"
 "        background-color: #5a2a82; /* base violet color */\n"
 "        color: #ffffff; /* white text */\n"
 "        border: none;\n"
@@ -261,7 +261,7 @@ class Ui_Osintgram(object):
 "        color: #8a7b9a; /* greyish text */\n"
 "    }")
 
-        self.gridLayout_3.addWidget(self.button_photos, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.button_stories, 2, 0, 1, 1)
 
         self.button_album = QPushButton(self.groupBox_2)
         self.button_album.setObjectName(u"button_album")
@@ -290,9 +290,9 @@ class Ui_Osintgram(object):
 
         self.gridLayout_3.addWidget(self.button_album, 3, 0, 1, 1)
 
-        self.button_stories = QPushButton(self.groupBox_2)
-        self.button_stories.setObjectName(u"button_stories")
-        self.button_stories.setStyleSheet(u"QPushButton {\n"
+        self.button_photos = QPushButton(self.groupBox_2)
+        self.button_photos.setObjectName(u"button_photos")
+        self.button_photos.setStyleSheet(u"QPushButton {\n"
 "        background-color: #5a2a82; /* base violet color */\n"
 "        color: #ffffff; /* white text */\n"
 "        border: none;\n"
@@ -315,7 +315,34 @@ class Ui_Osintgram(object):
 "        color: #8a7b9a; /* greyish text */\n"
 "    }")
 
-        self.gridLayout_3.addWidget(self.button_stories, 2, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.button_photos, 0, 0, 1, 1)
+
+        self.button_get_likes = QPushButton(self.groupBox_2)
+        self.button_get_likes.setObjectName(u"button_get_likes")
+        self.button_get_likes.setStyleSheet(u"QPushButton {\n"
+"        background-color: #5a2a82; /* base violet color */\n"
+"        color: #ffffff; /* white text */\n"
+"        border: none;\n"
+"        border-radius: 10px; /* reduced rounded corner radius */\n"
+"        padding: 5px 10px; /* reduced button padding */\n"
+"        font-size: 12px;\n"
+"        outline: none;\n"
+"    }\n"
+"    \n"
+"    QPushButton:hover {\n"
+"        background-color: #7b3ca3; /* slightly lighter violet when hovered */\n"
+"    }\n"
+"\n"
+"    QPushButton:pressed {\n"
+"        background-color: #481f61; /* darker violet when pressed */\n"
+"    }\n"
+"\n"
+"    QPushButton:disabled {\n"
+"        background-color: #3f1d4d; /* even darker shade when button is disabled */\n"
+"        color: #8a7b9a; /* greyish text */\n"
+"    }")
+
+        self.gridLayout_3.addWidget(self.button_get_likes, 4, 0, 1, 1)
 
 
         self.gridLayout_6.addWidget(self.groupBox_2, 1, 0, 1, 1)
@@ -584,9 +611,10 @@ class Ui_Osintgram(object):
         self.label_3.setText(QCoreApplication.translate("Osintgram", u"Target:    ", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("Osintgram", u"Target Media section: ", None))
         self.button_igtv.setText(QCoreApplication.translate("Osintgram", u"Get IGTV", None))
-        self.button_photos.setText(QCoreApplication.translate("Osintgram", u"Get photos", None))
-        self.button_album.setText(QCoreApplication.translate("Osintgram", u"Get Albums", None))
         self.button_stories.setText(QCoreApplication.translate("Osintgram", u"Get stories", None))
+        self.button_album.setText(QCoreApplication.translate("Osintgram", u"Get Albums", None))
+        self.button_photos.setText(QCoreApplication.translate("Osintgram", u"Get photos", None))
+        self.button_get_likes.setText(QCoreApplication.translate("Osintgram", u"Get Likes", None))
         self.groupBox_4.setTitle(QCoreApplication.translate("Osintgram", u"Status reports:", None))
         self.label_8.setText(QCoreApplication.translate("Osintgram", u"Target's total albums: ", None))
         self.label_5.setText(QCoreApplication.translate("Osintgram", u"Current message: ", None))

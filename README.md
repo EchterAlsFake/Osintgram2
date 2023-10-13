@@ -10,6 +10,8 @@ This project is currently not at my highest priority.
 I can fix it in approximately 1-2 weeks :) 
 <br>Thanks for your patience
 
+(I am working on a way to load the media objects with a delay, so that you don't get timed out.)
+
 # Table of contents
 
 - [Instagram ToS](#instagram-tos)

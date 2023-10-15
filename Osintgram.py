@@ -272,7 +272,6 @@ Do you really want to continue?
                 getattr(self, method)()
 
     def login(self, password_login=False):
-        print("Login called")
         if not os.path.isfile("session.json") or password_login:
 
             if os.path.exists("session.json"):

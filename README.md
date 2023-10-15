@@ -2,20 +2,12 @@
 
 ##### A *OSINT* Tool for anonymous advanced information gathering
 ##### Based on the great [Osintgram](https://github.com/Datalux/Osintgram) from Datalux
-# Information:
-
-This project is currently not at my highest priority.
-<br>Some features may not work correctly and there might be some logical flaws.
-
-I can fix it in approximately 1-2 weeks :) 
-<br>Thanks for your patience
-
-(I am working on a way to load the media objects with a delay, so that you don't get timed out.)
 
 # Table of contents
 
 - [Instagram ToS](#instagram-tos)
 - [Features](#features)
+- [In case you get Blocked](#block)
 - [Installation](#installation)
 - [Building from Source](#building-from-source)
 - [Credits](#credits)
@@ -34,15 +26,35 @@ INSTAGRAM PROHOBITS USING AUTOMATED TOOLS
 - Everything from the original Osintgram by Datalux*
 - automatic download of all media from specific hashtag
 - search for hashtags with a query
+- download media from hashtags
 - No Login required
 - Stable API
 - Intuitive folder structure system
 - Automatic login through session ID
 
 **except hashtags, tagged, commented, wcommented
+
+# Prevent Instagram Account bans
+
+Instagram has a lot of limitations since the Osintgram by Datalux.
+
+Try the following if you get errors, related to the API, login or loading objects:
+
+- Change IP (NO VPN, restart router instead)
+- Change device fingerprint
+- Change User Agent
+- Login with Browser, and use the Session ID from developer settings
+- Use different Account
+- Add 2FA to your account
+- Change Delay of API actions
+
+While developing I am using over 15 different Accounts and over 10 different IP addresses.
+<br>It's hard, but possible!
+
+
 # Installation
 
-### Current version: 1.1
+### Current version: 1.2
 ### Download from [Releases](https://github.com/EchterAlsFake/Osintgram2/releases)
 
 # Building from Source

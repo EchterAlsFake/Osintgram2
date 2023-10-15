@@ -15,26 +15,25 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import contextlib
-import instagrapi.exceptions
 import wget
 import os
 import json
 import argparse
 
 from logger import logger
-from instagrapi import Client
+from instagrapi import Client, exceptions
 from colorama import *
 from tqdm import tqdm
 from hue_shift import return_color, reset
 
-__version__ = "1.1"
+__version__ = "1.2"
 __author__ = "Johannes Habel | EchterAlsFake"
 __license__ = "GPL v3"
 __source__ = "https://github.com/EchterAlsFake/Osintgram2"
 
 
-
 def replace_unencodable_with_space(s, encoding='utf-8'):
+    """Needed for Accounts with chinese or in general non utf-8 encoding"""
     result = []
     for c in s:
         try:
@@ -46,13 +45,24 @@ def replace_unencodable_with_space(s, encoding='utf-8'):
 
 
 def create_workspace(target_name, hashtag_name=False):
-    folders = ["album", "igtv", "photos", "story", "profile_pic", "location", "photos_captions", "comments",
+    """Created a workspace for every target / hashtag"""
+    folders = ["album", "igtv", "photos", "stories", "profile_pic", "location", "photos_captions", "comments",
                "followers", "followings", "followers_email", "followings_email", "followers_number",
                "followings_number",
                "user_info"]
 
+    hashtag_medias = ["igtv", "photos", "stories", "clips"]
+
     if not os.path.exists(target_name):
         os.mkdir(target_name)
+
+    if hashtag_name is not False:
+        if not os.path.exists(hashtag_name):
+            os.mkdir(hashtag_name)
+
+            for folder in hashtag_medias:
+                if not os.path.exists(f"{hashtag_name}{os.sep}{folder}"):
+                    os.mkdir(f"{hashtag_name}{os.sep}{folder}")
 
     for folder in folders:
         if not os.path.exists(f"{target_name}{os.sep}{folder}"):
@@ -79,9 +89,23 @@ https://github.com/Datalux/Osintgram
 By proceeding, you acknowledge that I bear no liability for any repercussions and that you are using this tool entirely 
 at your own risk.
 
-Are you prepared to accept the potential consequences?
 
-Press Enter to continue if you are.
+Other information:
+
+If you login and it says Invalid credentials even if you are sure they are correct, then you got added to the login
+blacklist on Instagram. You can still login via the Web Browser. Open the developer tools, go to 'Application' and
+then go to the Cookies section. There you'll find your Session ID. Copy the value, create a file: session.json
+and write the following in it:
+
+{ 'session_id' : '<your_session_id>' }
+
+If you get timed out even with login create a new account for Instagram. If that doesn't work, restart your WiFi Router
+to get a new IP address assigned. If that doesn't work use another device. Change your device fingerprint and name.
+
+I know it's ugly, but it's the only way we get it working. 
+
+
+Press Enter to continue...
 """)
 
 
@@ -93,17 +117,14 @@ My version of Osintgram uses a really stable API called 'instagrapi'
 
     def __init__(self):
         self.z = f"{Fore.LIGHTGREEN_EX}[+]{Fore.RESET}"
-        self.username = None
-        self.password = None
-        self.logged_in = False
         self.photo_data = []
         self.video_data = []
         self.igtv_data = []
         self.reel_data = []
         self.album_data = []
+        self.stories = []
         self.followers = None
         self.followings = None
-        self.stories = []
         self.medias_export = None
         self.target = False
         self.cl = Client()
@@ -114,23 +135,39 @@ My version of Osintgram uses a really stable API called 'instagrapi'
             except KeyboardInterrupt:
                 exit(0)
 
-            except instagrapi.exceptions.LoginRequired as e:
+            except exceptions.LoginRequired as e:
                 logger(f"Instagram wants you to login. Please change your IP or Login to continue : {e}", level=1)
 
-            except instagrapi.exceptions.ChallengeRequired:
+            except exceptions.ChallengeRequired:
                 logger("You need to solve a challenge. Go to instagram.com to do this!", level=1)
 
-            except instagrapi.exceptions.UserNotFound:
+            except exceptions.UserNotFound:
                 logger("The user was not found. Try again", level=1)
 
-            except instagrapi.exceptions.PrivateAccount:
+            except exceptions.PrivateAccount:
                 logger("The User's account is private. You need to log in and follow the account in order to retrieve "
                        "information", level=1)
 
-            except instagrapi.exceptions.PleaseWaitFewMinutes:
+            except exceptions.PleaseWaitFewMinutes:
                 logger("Timed out by instagram. Please wait a few minutes, change IP and try again!", level=1)
 
+            except exceptions.ClientJSONDecodeError:
+                logger("Instagram API returned different Data than expected. This is likely because you got blocked."
+                       "Go to Instagram.com and see if a pop up with a challenge appears.", level=1)
+
+            except exceptions.ClientUnauthorizedError:
+                logger("Go to Instagram.com and solve a challenge", level=1)
+
     def menu(self):
+
+        if self.target is not False:
+            if self.check_account_type():
+                color = Fore.LIGHTGREEN_EX
+
+            elif not self.check_account_type():
+                color = Fore.LIGHTRED_EX
+        else:
+            color = Fore.LIGHTWHITE_EX
 
         options_map = {
             "0": "login",
@@ -139,10 +176,10 @@ My version of Osintgram uses a really stable API called 'instagrapi'
             "3": "get_comments",
             "4": "get_followers",
             "5": "get_followings",
-            "6": lambda: self.get_email(mode="6"),
-            "7": lambda: self.get_email(mode="7"),
-            "8": lambda: self.get_number(mode="8"),
-            "9": lambda: self.get_number(mode="9"),
+            "6": lambda: self.get_follower_ings_data(mode="email", follow_mode="8"),
+            "7": lambda: self.get_follower_ings_data(mode="email", follow_mode="9"),
+            "8": lambda: self.get_follower_ings_data(mode="phone", follow_mode="8"),
+            "9": lambda: self.get_follower_ings_data(mode="phone", follow_mode="9"),
             "10": "get_info",
             "11": "get_likes",
             "12": "get_media_type",
@@ -157,50 +194,75 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         }
 
         options = input(f"""{Fore.LIGHTWHITE_EX}
-{Fore.LIGHTRED_EX}RED{Fore.LIGHTWHITE_EX}:   Needs Login
-{Fore.LIGHTGREEN_EX}GREEN{Fore.LIGHTWHITE_EX}: Works with private accounts you don't follow
-{return_color()}Note: Most features for Private accounts need a log in and you need to follow them!{reset()}
+{Fore.LIGHTGREEN_EX}GREEN: {Fore.LIGHTWHITE_EX}Works
+{Fore.LIGHTWHITE_EX}White: Unknown / Undefined
+{Fore.LIGHTRED_EX}Red:   {Fore.LIGHTWHITE_EX}Needs login
+        
+T) Set Target
+0) - Login             Needed for private account's you are following to
+{color}1) - addrs             Get all registered addressed by target photos
+{color}2) - captions          Get user's photos captions
+{color}3) - comments          Get total comments of target's posts
+{color}4) - followers         Get target followers
+{color}5) - followings        Get users followed by target
+{color}6) - fwersemail        Get email of target followers
+{color}7) - fwingsemail       Get email of users followed by target
+{color}8) - fwersnumber       Get phone number of target followers
+{color}9) - fwingsnumber      Get phone number of users followed by target
+{Fore.LIGHTGREEN_EX}10) - info             Get target info
+{color}11) - likes            Get total likes of target's posts
+{color}12) - mediatype        Get user's posts type (photo or video)
+{color}13) - photos           Download user's photos in output folder
+{Fore.LIGHTGREEN_EX}14) - propic           Download user's profile picture
+{color}15) - stories          Download user's stories
+{color}16) - album            Download user's album
+{color}17) - igtv             Get user's IGTV
+{Fore.LIGHTWHITE_EX}18) - hashtag_media    Get all media files from a specific hashtag
+{Fore.LIGHTWHITE_EX}19) - hashtag_search   Search for hashtags with a search query
+20) - Exit  
+-------------------=>:""")
 
-{return_color()}T) Set Target{reset()}
-0) - {return_color()}Login{reset()}             Needed for private account's you are following to
-1) - {return_color()}addrs{reset()}             Get all registered addressed by target photos
-2) - {return_color()}captions{reset()}          Get user's photos captions
-3) - {return_color()}comments{reset()}          Get total comments of target's posts
-4) - {return_color()}followers{reset()}         Get target followers
-5) - {return_color()}followings{reset()}        Get users followed by target
-6) - {return_color()}fwersemail{reset()}        Get email of target followers
-7) - {return_color()}fwingsemail{reset()}       Get email of users followed by target
-8) - {return_color()}fwersnumber{reset()}       Get phone number of target followers
-9) - {return_color()}fwingsnumber{reset()}      Get phone number of users followed by target
-{Fore.LIGHTGREEN_EX}10) - info{reset()}             Get target info
-11) - {return_color()}likes{reset()}            Get total likes of target's posts
-12) - {return_color()}mediatype{reset()}        Get user's posts type (photo or video)
-13) - {return_color()}photos{reset()}           Download user's photos in output folder
-{Fore.LIGHTGREEN_EX}14) - propic{reset()}           Download user's profile picture
-15) - {return_color()}stories{reset()}          Download user's stories
-16) - {return_color()}album{reset()}            Download user's album
-17) - {return_color()}igtv{reset()}             Get user's IGTV
-{Fore.LIGHTRED_EX}18) - hashtag_media{reset()}    Get all media files from a specific hashtag
-19) - {return_color()}hashtag_search{reset()}   Search for hashtags with a search query
-{Fore.LIGHTWHITE_EX}20) - Exit{reset()}  
-{return_color()}-------------------=>:{reset()}""")
+        excluded_numbers = {9, 11, 13, 15, 4, 5, 6, 7, 8}
+        excluded_numbers_target = {0, 18, 19, 20}
+        need_media_request_range = [i for i in range(1, 18) if i not in excluded_numbers]
+        need_target_being_set = [i for i in range(1, 20) if i not in excluded_numbers_target]
+        deprecated = {4, 5, 6, 7, 8, 9}  # Use set for better performance
 
-        if (options != "T" and options != "20" and options != "0" and options != "19" and
-                options != "18" and options != "14" and options != "10" and not self.target):
+        if options == "T":
+            self.get_target()
+            return  # To exit early from the function if the option is "T"
 
+        int_options = int(options)
+
+        if int_options in deprecated:
+            _ = input(f"""
+WARNING:
+
+Since the old Osintgram Instagram has changed a lot of things on their API.
+It's now much more restricted and we can't do so much things with excessive speeds like back than.
+
+I can load 2 follower objects per second. 
+1000 followers would take 500 seconds (8.3 minutes) to load.
+
+The chances of getting timed out are high.
+
+Do you really want to continue?
+
+1) Yes
+2) No
+""")
+            if _ != "1":
+                self.menu()
+                return
+
+        if int_options in need_target_being_set:
             self.get_target()
 
-        elif options == "T":
-            self.get_target()
+        if int_options in need_media_request_range or int_options != 20:
+            self.media()
 
-        elif options == "20":
-            exit()
-
-        elif options == "14":
-            self.download_propic()
-
-        elif options == "10":
-            self.get_info()
+        if int_options == 20:
+            exit(0)
 
         method = options_map.get(options, None)
         if method:
@@ -210,17 +272,16 @@ My version of Osintgram uses a really stable API called 'instagrapi'
                 getattr(self, method)()
 
     def login(self, password_login=False):
-        username = input(f"{return_color()}Username: {reset()}")
-        password = input(f"{return_color()}Password: {reset()}")
-
+        print("Login called")
         if not os.path.isfile("session.json") or password_login:
 
             if os.path.exists("session.json"):
                 os.remove("session.json")
 
             try:
+                username = input(f"{return_color()}Username: {reset()}")
+                password = input(f"{return_color()}Password: {reset()}")
                 self.cl.login(username, password)
-                self.logged_in = True
                 logger(f"{return_color()}Login Successful!{reset()}")
                 session_id = self.cl.sessionid
                 session_data = {
@@ -229,7 +290,8 @@ My version of Osintgram uses a really stable API called 'instagrapi'
                 with open("session.json", "w") as file:
                     json.dump(session_data, file)
 
-            except instagrapi.exceptions.BadPassword or instagrapi.exceptions.BadCredentials:
+            except exceptions.BadPassword or exceptions.BadCredentials:
+                logger("Invalid credentials!", level=1)
                 self.login(password_login=True)
 
         else:
@@ -239,42 +301,77 @@ My version of Osintgram uses a really stable API called 'instagrapi'
             session_id_value = session_data["session_id"]
             try:
                 self.cl.login_by_sessionid(session_id_value)
-                self.logged_in = True
                 logger(f"{return_color()}Login Successful!{reset()}")
 
-            except instagrapi.exceptions:
+            except exceptions.BadPassword or exceptions.BadCredentials:
+                logger(f"Login with Session ID failed.  Probably because it's out of date. Please try with password...")
                 self.login(password_login=True)
 
     def get_target(self):
-        try:
-            self.username = input(f"{self.z}{return_color()}Enter target --=>:{reset()}")
-            self.clear_lists()
-            target_id = self.get_target_id()
-            info = self.cl.user_info(target_id)
-            logger(f"{return_color()}Target: {reset()}{info.full_name}")
-            self.target = self.username
-            self.get_media_raw()
-            create_workspace(self.username)
+        self.target = input(f"{self.z}{return_color()}Enter target --=>:{reset()}")
+        self.clear_lists()
+        target_id = self.get_target_id()
+        logger(f"{return_color()}Verified Target as User: {target_id}{reset()}")
+        create_workspace(self.target)
+        self.medias_export = False
 
-        except instagrapi.exceptions.PrivateAccount or instagrapi.exceptions.PrivateError:
-            logger(f"{Fore.LIGHTMAGENTA_EX}User is a private account. Log in to your account and follow him / her",
-                   level=1)
-            self.get_target()
+    def check_account_type(self):
+        """Checks if target is private account or not"""
+
+        try:
+            self.cl.user_medias(user_id=self.get_target_id(), amount=1)
+            return True
+
+        except exceptions.PrivateAccount or exceptions.PrivateError:
+            return False
+
+    def media(self):
+        if self.medias_export is False:
+            self.get_media_raw()
 
     def get_target_id(self):
-        return self.cl.user_id_from_username(self.username)
+        return self.cl.user_id_from_username(self.target)
 
     def get_media_raw(self):
-        logger(f"Retrieving media objects for: {self.target}")
-        medias = self.cl.user_medias_v1(user_id=self.get_target_id())
-        self.medias_export = medias
-        logger(f"Found {len(medias)} media files{Fore.RESET}")
+        request_speed = input(f"""
+In order to load the media objects, we need to adjust the speed of the API. Higher speeds will increase the chance of
+getting banned or a complete fail of the operation.
+
+The media objects must only be loaded once for a target in a terminal session. It can then be reused, when using other
+functions such as get IGTV or get Albums.
+
+Enter between 1 - 100 (default: 50) -->:
+""")
+
+        if not int(request_speed) in range(0, 100):
+            print("Invalid input. Please enter a number between 0 and 100")
+            self.get_media_raw()
+
+        end_cursor = None
+        counter = 0
+        all_medias = []
+        user_info = self.cl.user_info(self.get_target_id())
+        total_posts = user_info.media_count
+
+        pbar = tqdm(total=total_posts, desc="Fetching media")
+
+        while True:
+            medias, end_cursor = self.cl.user_medias_paginated(self.get_target_id(), amount=int(request_speed),
+                                                               end_cursor=end_cursor)
+            counter += len(medias)  # Increment counter by actual fetched count
+            pbar.update(len(medias))  # Update progress bar by actual fetched count
+            all_medias.extend(medias)
+
+            if counter >= total_posts:
+                break
+
         data = self.sort_data_types(medias)
         self.photo_data = data[0]
         self.video_data = data[1]
         self.igtv_data = data[2]
         self.reel_data = data[3]
         self.album_data = data[4]
+        self.medias_export = True
 
     def clear_lists(self):
         self.video_data = []
@@ -286,26 +383,27 @@ My version of Osintgram uses a really stable API called 'instagrapi'
         self.followings = None
 
     def get_location(self):
-
         medias = self.photo_data + self.igtv_data + self.album_data + self.reel_data + self.stories
 
         latitudes = []
         longitudes = []
 
-        with open(f"{self.username}{os.sep}location{os.sep}location_data.txt", "a") as location_file:
+        with open(f"{self.target}{os.sep}location{os.sep}location_data.txt", "a") as location_file:
             for media in medias:
                 with contextlib.suppress(AttributeError):
+                    print(media.pk)
                     latitudes.append(media.location.lat)
                     longitudes.append(media.location.lng)
                     data = f"Latitude:  {media.location.lat} : Longitude: {media.location.lng}"
+                    print(data)
                     location_file.write(f"{data}\n")
 
-            if len(latitudes) and len(longitudes) == 0:
+            if len(latitudes) == 0 and len(longitudes) == 0:
                 logger(f"{return_color()} No location data found. Sorry.")
 
     def download_album(self):
         for item in tqdm(self.album_data):
-            self.cl.album_download(item.pk, folder=f"{self.username}{os.sep}album{os.sep}")
+            self.cl.album_download(item.pk, folder=f"{self.target}{os.sep}album{os.sep}")
 
         logger("Finished downloading :)")
 
@@ -315,7 +413,7 @@ My version of Osintgram uses a really stable API called 'instagrapi'
             self.menu()
 
         else:
-            with open(f"{self.username}{os.sep}photos_captions.txt", "w") as caption_file:
+            with open(f"{self.target}{os.sep}photos_captions.txt", "w") as caption_file:
                 for media in self.photo_data:
                     data = f"""
 Media ID: {media.id}
@@ -330,7 +428,7 @@ Caption: {media.caption_text}"""
         data = self.photo_data + self.igtv_data + self.reel_data + self.video_data + self.album_data
         media_ids = [item.id for item in data]
 
-        with open(f"{self.username}{os.sep}comments{os.sep}comments.txt") as comments_file:
+        with open(f"{self.target}{os.sep}comments{os.sep}comments.txt") as comments_file:
             for id in media_ids:
                 comments = self.cl.media_comments(media_id=id)
                 logger(f"{Fore.LIGHTGREEN_EX}Found {len(comments)} comments in Media: {id}")
@@ -344,91 +442,148 @@ Caption: {media.caption_text}"""
 {return_color()}Commented at: {created}
 {return_color()}Likes: {likes}
 {return_color()}Text: {text}""")
-                    logger(data)
+                    print(data)
                     comments_file.write(f"{data}\n")
 
     def get_followers(self):
-        user_id = self.get_target_id()
-        amount = input(f"{return_color()}Enter amount of followings you want to get  (0 for all) --=>:")
-        followings = self.cl.user_followers_v1(user_id, amount=int(amount))
-        for counter, follower in enumerate(followings):
-            logger(f"{counter}) Username: {follower.username}")
+        _ = input(f"{self.z}{return_color()}Enter amount of followers you want to get (0 for all) --=>:")
+        amount_per_request = int(input(f"""
+We need to adjust the API speed. Please set in range of 0 - 100
+The more followers the Target has, the less should be the speed.
+
+Enter between 0 - 100 (default: 50) -->:"""))
+
+        if not amount_per_request in range(0, 100):
+            logger("Invalid input. Please enter a number between 0 and 100", level=1)
+
+        if int(_) == 0:
+            user_info = self.cl.user_info(self.get_target_id())
+            total_followers = user_info.follower_count
+
+        else:
+            total_followers = int(_)
+
+        pbar = tqdm(total=total_followers, desc="Fetching followers")
+
+        all_followers = []
+        end_cursor = None
+
+        while True:
+            followers = self.cl.user_followers_gql_chunk(self.get_target_id(),
+                                                         max_amount=amount_per_request,
+                                                         end_cursor=end_cursor)
+            print(end_cursor)
+
+            pbar.update(len(followers))
+            all_followers.extend(followers)
+            # Break condition if there's no more data (no end_cursor)
+            if len(all_followers) >= total_followers:
+                self.followers = followers
+                break
+
+        pbar.close()
 
     def get_followings(self):
-        user_id = self.get_target_id()
-        amount = input(f"{self.z}{return_color()}Enter amount of followings you want to get  (0 for all) --=>:")
-        followings = self.cl.user_following_v1(user_id, amount=int(amount))
-        for counter, follower in enumerate(followings):
-            logger(f"{counter}) Username: {follower.username}")
+        _ = input(f"{self.z}{return_color()}Enter amount of followers you want to get (0 for all) --=>:")
+        amount_per_request = int(input(f"""
+        We need to adjust the API speed. Please set in range of 0 - 100
+        The more followers the Target has, the less should be the speed.
 
-    def get_email(self, mode):
-        amount = input(
-            f"{self.z}{return_color()}For how much followers / following you want to get emails for (0 for all)--=>:")
-        user_id = self.get_target_id()
-        if mode == "6":
-            followers = self.cl.user_followers(user_id, amount=int(amount))
-            open("")
-        elif mode == "7":
-            followers = self.cl.user_following(user_id, amount=int(amount))
+        Enter between 0 - 100 (default: 50) -->:"""))
 
-        emails = []
-        user_names = []
-        valid_users = []
+        if not amount_per_request in range(0, 100):
+            logger("Invalid input. Please enter a number between 0 and 100", level=1)
 
-        for follower in tqdm(followers):
-            user_names.append(follower.username)
-            logger(f"{return_color()} Appended: {follower.username}")
+        if int(_) == 0:
+            user_info = self.cl.user_info(self.get_target_id())
+            total_followers = user_info.follower_count
 
-        for username in tqdm(user_names):
-            try:
-                email = self.cl.user_info_by_username(username)
-                if email.public_email is not None:
-                    emails.append(email.public_email)
-                    valid_users.append(email.username)
+        else:
+            total_followers = int(_)
 
-            except AttributeError:
-                pass
+        pbar = tqdm(total=total_followers, desc="Fetching followers")
 
-        with open(f"{self.username}{os.sep}followers_email{os.sep}emails.txt", "w") as emails_file:
-            if len(emails) == 0:
-                logger(msg="Sorry, but none of the users have a public email address :(", level=1)
+        all_followers = []
 
-            else:
-                for counter, email in enumerate(emails):
-                    data = f"{counter}) User: {user_names[counter]} Email: {email}"
-                    logger(data)
-                    emails_file.write(f"{data}\n")
+        while True:
+            following = self.cl.user_following(self.get_target_id(), amount=amount_per_request)
 
-    def get_number(self, mode):
-        if mode == "8":
+            pbar.update(len(following))
+            all_followers.extend(following)
+
+            if len(all_followers) >= total_followers:
+                self.followers = following
+                break
+
+        pbar.close()
+
+    def get_follower_ings_data(self, follow_mode, mode):
+        if follow_mode == "8":
+            if self.followers is None or len(self.followings) == 0:
+                self.get_followers()
             followers = self.followers
 
-        elif mode == "9":
+        elif follow_mode == "9":
+            if self.followings is None or len(self.followers) == 0:
+                self.get_followings()
             followers = self.followings
 
         valid_users = []
-        numbers = []
+        usernames = []
+        emails = []
         codes = []
+        numbers = []
 
-        usernames = [follower.username for follower in followers]
+        for follower_object in followers:
+            for follower in follower_object:
+                try:
+                    usernames.append(follower.username)
+                except AttributeError:
+                    pass
+
         for username in usernames:
             user_info = self.cl.user_info(user_id=self.cl.user_id_from_username(username))
 
-            if user_info.public_phone_country_code is not None:
-                codes.append(user_info.public_phone_country_code)
-                if username not in valid_users:
-                    valid_users.append(username)
+            if mode == "email":
+                try:
+                    if user_info.public_email is not None:
+                        emails.append(user_info.public_email)
+                        valid_users.append(user_info.username)
+                except AttributeError:
+                    pass
 
-            if user_info.public_phone_number is not None:
-                numbers.append(user_info.public_phone_number)
-                if username not in valid_users:
-                    valid_users.append(username)
+            else:
+                if user_info.public_phone_country_code is not None:
+                    codes.append(user_info.public_phone_country_code)
+                    if username not in valid_users:
+                        valid_users.append(username)
 
-        with open(f"{self.username}{os.sep}followers_number{os.sep}numbers.txt", "w") as followers_number_file:
-            for counter, user in enumerate(valid_users):
-                data = f"{return_color()}{counter}) Found Number {numbers[counter]} with Code: {codes[counter]} for User: {user}"
-                logger(data)
-                followers_number_file.write(f"{data}\n")
+                if user_info.public_phone_number is not None:
+                    numbers.append(user_info.public_phone_number)
+                    if username not in valid_users:
+                        valid_users.append(username)
+
+        if mode == "email":
+            with open(f"{self.target}{os.sep}followers_email{os.sep}emails.txt", "w") as emails_file:
+                if len(emails) == 0:
+                    logger(msg="Sorry, but none of the users have a public email address :(", level=1)
+                else:
+                    for counter, email in enumerate(emails):
+                        data = f"{counter}) User: {valid_users[counter]} Email: {email}"
+                        logger(data)
+                        emails_file.write(f"{data}\n")
+
+        else:
+            with open(f"{self.target}{os.sep}followers_number{os.sep}numbers.txt", "w") as followers_number_file:
+                if len(numbers) == 0:
+                    logger(msg="Sorry, but none of the users have a public phone number :(", level=1)
+                else:
+                    for counter, user in enumerate(valid_users):
+                        data = (
+                            f"{return_color()}{counter}) Found Number {numbers[counter]} with Code: {codes[counter]} for "
+                            f"User: {user}")
+                        logger(data)
+                        followers_number_file.write(f"{data}\n")
 
     def get_igtv(self):
         if len(self.igtv_data) == 0 or self.igtv_data is None:
@@ -437,11 +592,12 @@ Caption: {media.caption_text}"""
         else:
             for item in tqdm(self.igtv_data):
                 pk = item.pk
-                self.cl.igtv_download(pk, folder=f"{self.username}{os.sep}igtv{os.sep}")
+                self.cl.igtv_download(pk, folder=f"{self.target}{os.sep}igtv{os.sep}")
 
     def get_info(self):
         if not self.target:
-            target = input(f"{return_color()}Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
+            target = input(
+                f"{return_color()}Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
             info = self.cl.user_info_by_username(target)
             write_data = False
 
@@ -503,17 +659,15 @@ If something has 'None' as answer, it means, that there's no information about i
         filtered_text = replace_unencodable_with_space(text)
         logger(filtered_text)
         if write_data:
-            with open(f"{self.username}{os.sep}user_info{os.sep}user_info.txt", "w") as user_info:
+            with open(f"{self.target}{os.sep}user_info{os.sep}user_info.txt", "w") as user_info:
                 user_info.write(filtered_text)
 
     def sort_data_types(self, data_packet):
-
         photo_data = []
         video_data = []
         igtv_data = []
         reel_data = []
         album_data = []
-
 
         for item in data_packet:
             if item.media_type == 1:
@@ -545,7 +699,6 @@ If something has 'None' as answer, it means, that there's no information about i
         logger(f"Total Likes: {likes}")
 
     def get_media_type(self):
-
         photos = len(self.photo_data)
         reels = len(self.reel_data)
         igtv = len(self.igtv_data)
@@ -553,21 +706,22 @@ If something has 'None' as answer, it means, that there's no information about i
         album = len(self.album_data)
 
         logger(f"""
-    
 {return_color()}Photos: {photos}
 {return_color()}Reels:  {reels}
 {return_color()}IGTV:   {igtv}
 {return_color()}Video:  {video}
-{return_color()}Album:  {album}""")
+{return_color()}Album:  {album}
+""")
 
     def download_photos(self):
         for photo in tqdm(self.photo_data):
             pk = photo.pk
-            self.cl.photo_download(pk, folder=f"{self.username}{os.sep}photos{os.sep}")
+            self.cl.photo_download(pk, folder=f"{self.target}{os.sep}photos{os.sep}")
 
     def download_propic(self):
         if not self.target:
-            target = input(f"{return_color()}Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
+            target = input(
+                f"{return_color()}Enter Target  (Private verification will be skipped. Do not report errors here!) -->:")
 
         else:
             target = self.target
@@ -575,27 +729,23 @@ If something has 'None' as answer, it means, that there's no information about i
         user_id = self.cl.user_id_from_username(target)
         user_info = self.cl.user_info(user_id)
         picture = user_info.profile_pic_url_hd
-        if self.username is None:
-            username = target
+        if self.target is None:
             wget.download(picture)
 
         else:
-            wget.download(picture, out=f"{self.username}{os.sep}profile_pic{os.sep}")
+            wget.download(picture, out=f"{self.target}{os.sep}profile_pic{os.sep}")
 
         logger(f"Downloaded profile picture!")
 
     def download_stories(self):
         amount = input(
             f"{self.z}{return_color()}Enter the amount of stories you want to download (0 for all) --=>:")
-        stories = self.cl.user_stories(user_id=self.get_target_id(), amount=int(amount))
+        stories = self.cl.user_stories_v1(self.get_target_id(), amount=int(amount))
 
-        for story in stories:
-            self.stories.append(story.pk)
-
-        for pk in tqdm(self.stories):
-            self.cl.story_download(pk, folder=f"{self.username}{os.sep}stories{os.sep}")
-
-        logger(f"Downloaded {len(stories)} stories")
+        for story in tqdm(stories):
+            pk = story.pk
+            logger(f"Downloading Story: {pk}")
+            self.cl.story_download(int(pk), folder=f"{self.target}{os.sep}stories{os.sep}")
 
     def get_hashtags_media(self):
         hashtag = input(f"{self.z}{return_color()}Enter the hashtag without # -->:")
@@ -658,7 +808,6 @@ If something has 'None' as answer, it means, that there's no information about i
                 for album in tqdm(album_data):
                     self.cl.album_download(media_pk=album.pk, folder=f"{hashtag}{os.sep}albums{os.sep}")
 
-
         logger(f"{return_color()}All done :)")
 
     def search_hashtags(self):
@@ -673,29 +822,9 @@ If something has 'None' as answer, it means, that there's no information about i
 
 
 def execute():
-    try:
-        proceed()
-        Osintgram()
+    proceed()
+    Osintgram()
 
-    except instagrapi.exceptions.PrivateAccount:
-        logger("You are trying to access a private account. Please login and follow that person!")
-
-    except instagrapi.exceptions.PleaseWaitFewMinutes:
-        logger(
-            "Please wait a few minutes, change IP, or Login and try again! This is a restriction from Instagram.")
-
-    except instagrapi.exceptions.ChallengeRequired:
-        logger(
-            "Instagram wants you to solve a challenge. Please go to https://instagram.com, solve it and try again")
-
-    except instagrapi.exceptions.UserNotFound:
-        logger("The User was not found.  Maybe a typo?")
-
-    except instagrapi.exceptions.LoginRequired:
-        logger("You must login!  (requested by Instagram)")
-
-    except instagrapi.exceptions.HashtagNotFound:
-        logger("The hashtag was not found. Maybe a typo?")
 
 def help():
     print("""
@@ -708,7 +837,7 @@ def help():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--no-color", help="Disables terminal colors", action="store_true")
+    parser.add_argument("-c", "--no-color", help="Disables most of the terminal colors", action="store_true")
     parser.add_argument("-v", "--version", help="Shows version information", action="store_true")
     parser.add_argument("-s", "--source", help="Shows the Source of this project", action="store_true")
     parser.add_argument("-l", "--license", help="Shows License information", action="store_true")
@@ -717,6 +846,7 @@ if __name__ == "__main__":
     if args.no_color:
         def return_color():
             return Fore.LIGHTWHITE_EX
+
 
         execute()
 
@@ -731,6 +861,3 @@ if __name__ == "__main__":
 
     else:
         execute()
-
-
-

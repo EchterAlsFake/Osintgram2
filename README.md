@@ -48,7 +48,7 @@ Try the following if you get errors, related to the API, login or loading object
 - Add 2FA to your account
 - Change Delay of API actions
 
-While developing I am using over 15 different Accounts and over 10 different IP addresses.
+While developing, I am using over 15 different Accounts and over 10 different IP addresses.
 <br>It's hard, but possible!
 
 

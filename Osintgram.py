@@ -52,7 +52,8 @@ def create_workspace(target_name, hashtag_name=False):
                "user_info"]
 
     hashtag_medias = ["igtv", "photos", "stories", "clips"]
-
+    files = ["location_data.txt", "photos_captions.txt", "comments.txt", "emails.txt", "numbers.txt", "user_info.txt"]
+    folders_with_file = ["location", "photos_captions", "comments", "followers_emails", "followers_numbers", "user_info"]
     if not os.path.exists(target_name):
         os.mkdir(target_name)
 
@@ -64,9 +65,16 @@ def create_workspace(target_name, hashtag_name=False):
                 if not os.path.exists(f"{hashtag_name}{os.sep}{folder}"):
                     os.mkdir(f"{hashtag_name}{os.sep}{folder}")
 
-    for folder in folders:
+    dont_ask = 0
+    for folder in enumerate(folders, start=0):
         if not os.path.exists(f"{target_name}{os.sep}{folder}"):
             os.mkdir(f"{target_name}{os.sep}{folder}")
+            if folder in folders_with_file:
+                file = files[dont_ask]
+                dont_ask += 1
+                with open(folder + os.sep + file, "w") as f:
+                    f.close()
+
 
 
 def proceed():

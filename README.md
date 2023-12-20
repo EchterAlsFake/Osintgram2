@@ -1,3 +1,8 @@
+# IMPORTANT:
+#### This project is currently unstable and unmaintained. There will be an update in the future!
+
+
+
 # Osintgram 2🔎📸
 
 ##### A *OSINT* Tool for anonymous advanced information gathering

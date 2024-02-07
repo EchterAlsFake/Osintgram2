@@ -2,7 +2,7 @@
 #### This project is currently unstable and unmaintained. There will be an update in the future!
 
 Upate:
-I'll shit from Instagrapi to Instaloader. Please wait some more days...
+I'll shift from Instagrapi to Instaloader. Please wait some more days...
 
 
 # Osintgram 2🔎📸

@@ -1,8 +1,15 @@
-# IMPORTANT:
-#### This project is currently unstable and unmaintained. There will be an update in the future!
 
-Upate:
-I'll shift from Instagrapi to Instaloader. Please wait some more days... (edit *weeks)
+# Announcement
+
+This project is dead.
+
+The problem is that Instagram is very strict with their APIs nowadays, and we just don't have the abilities like back then.
+You can still use this project, and it should still work a bit, but I won't be really developing on this anymore.
+Maybe I am doing small updates to fix critical issues, but please don't report errors anymore. I won't fix them.
+
+
+Thank you all.
+
 
 
 # Osintgram 2🔎📸
@@ -14,7 +21,7 @@ I'll shift from Instagrapi to Instaloader. Please wait some more days... (edit *
 
 - [Instagram ToS](#instagram-tos)
 - [Features](#features)
-- [In case you get Blocked](#block)
+- [In case you get Blocked](#prevent-instagram-account-bans)
 - [Installation](#installation)
 - [Building from Source](#building-from-source)
 - [Credits](#credits)
